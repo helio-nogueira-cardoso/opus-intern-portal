@@ -4,6 +4,7 @@ import br.com.opusinternportal.api.dto.GenericMessage;
 import br.com.opusinternportal.api.dto.JwtResponse;
 import br.com.opusinternportal.api.dto.LoginRequest;
 import br.com.opusinternportal.api.dto.RegisterRequest;
+import br.com.opusinternportal.api.entity.Role;
 import br.com.opusinternportal.api.service.AuthService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -23,8 +24,11 @@ public class AuthController {
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<GenericMessage> register(@Valid @RequestBody RegisterRequest registerRequest) {
-        String message = authService.register(registerRequest);
+        if (registerRequest.role() == Role.ADMIN) {
+            throw new IllegalArgumentException("Cannot register as an administrator!");
+        }
 
+        String message = authService.register(registerRequest);
         return ResponseEntity.ok(new GenericMessage(message));
     }
 
