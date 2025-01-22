@@ -9,6 +9,7 @@ import br.com.opusinternportal.api.entity.PortalUser;
 import br.com.opusinternportal.api.entity.Role;
 import br.com.opusinternportal.api.repository.PortalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,10 +30,17 @@ public class AuthService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
+    
+    @Value("${opusinternportal.email-domain}")
+    private String emailDomain;
+    
     public GenericMessage register(RegisterRequest registerRequest) {
         if (registerRequest.role() == Role.ADMIN) {
             throw new IllegalArgumentException("Cannot register as an administrator!");
+        }
+
+        if (!registerRequest.email().toLowerCase().endsWith(emailDomain.toLowerCase())) {
+            throw new IllegalArgumentException("Email must belong to the domain: " + emailDomain);
         }
 
         Optional<PortalUser> existingUser = portalUserRepository.findByEmail(registerRequest.email());
