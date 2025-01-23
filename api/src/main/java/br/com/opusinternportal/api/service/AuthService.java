@@ -10,11 +10,15 @@ import br.com.opusinternportal.api.entity.Role;
 import br.com.opusinternportal.api.repository.PortalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 import java.util.Optional;
 
 @Service
@@ -62,7 +66,7 @@ public class AuthService {
         var authenticationToken =  new UsernamePasswordAuthenticationToken(request.email(), request.password());
         var authentication = authenticationManager.authenticate(authenticationToken);
         var jwtToken = jwtTokenProvider.generateToken(
-                (UserDetails) authentication.getPrincipal()
+                (PortalUser) authentication.getPrincipal()
         );
 
         return new JwtResponse(jwtToken);

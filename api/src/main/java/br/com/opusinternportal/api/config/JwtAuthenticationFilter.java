@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -23,41 +24,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private PortalUserRepository portalUserRepository;
 
-    @Override
-    /**
-     * First filter responsible for ensuring that there is a valid JWT token in the request.
-     * If a valid token is found, it configures authentication in the Spring Security Context.
-     * Otherwise, it simply passes the request to the next filters, which may handle authentication differently.
-     */
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // Extract token from Authorization header
-        String tokenJWT = extractToken(request);
+        var tokenJWT = getTokenJWT(request);
 
         if (tokenJWT != null) {
-            try {
-                // Extract user email from JWT token (email acts as username)
-                String email = jwtTokenProvider.extractEmail(tokenJWT);
+            var email = jwtTokenProvider.getSubject(tokenJWT);
+            var user = portalUserRepository.findByEmail(email)
+                    .orElseThrow(() -> new UserPrincipalNotFoundException("User not found with email: " + email));
 
-                // Load user details from Database
-                PortalUser portalUser = portalUserRepository.findByEmail(email).orElseThrow(
-                        () -> new RuntimeException("User not found with email: " + email)
-                );
+            var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
-                // Verify whether the token is valid for the user
-                if (jwtTokenProvider.validateToken(tokenJWT, portalUser)) {
-                    var authentication = new UsernamePasswordAuthenticationToken(portalUser,null, portalUser.getAuthorities());
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                }
-            } catch (JWTVerificationException e) {
-                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
-                return;
-            }
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private String extractToken(HttpServletRequest request) {
+    private String getTokenJWT(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
 
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {

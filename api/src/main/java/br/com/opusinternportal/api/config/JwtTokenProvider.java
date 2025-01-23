@@ -3,12 +3,16 @@ package br.com.opusinternportal.api.config;
 import br.com.opusinternportal.api.entity.PortalUser;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 @Component
@@ -19,41 +23,23 @@ public class JwtTokenProvider {
     @Value("${opusinternportal.security.issuer}")
     private String issuer;
 
-    @Value("${opusinternportal.security.expiration}")
-    private Long expirationTime;
+    @Value("${opusinternportal.security.token-expiration-time-in-minutes}")
+    private Long expirationTimeInMinutes;
 
-    public String generateToken(UserDetails userDetails) {
-        Algorithm algorithm = Algorithm.HMAC256(secretKey);
-
-        Date issuedAtDate = new Date();
-        Date expiresAtDate = new Date(System.currentTimeMillis() + expirationTime);
-        String role = userDetails.getAuthorities().stream()
-                .findFirst()
-                .map(GrantedAuthority::getAuthority)
-                .orElseThrow(() -> new IllegalStateException("User has no roles assigned"));
-
-        return buildToken(userDetails.getUsername(), issuedAtDate, expiresAtDate, role, algorithm);
-    }
-
-    private String buildToken(String subject, Date issuedAt, Date expiresAt, String role, Algorithm algorithm) {
-        return JWT.create()
-                .withSubject(subject)
-                .withIssuedAt(issuedAt)
-                .withExpiresAt(expiresAt)
-                .withClaim("role", role)
-                .sign(algorithm);
-    }
-
-    public boolean validateToken(String token, PortalUser portalUser) {
+    public String generateToken(PortalUser user) {
         try {
-            String username = extractEmail(token);
-            return username.equals(portalUser.getEmail()) && !isTokenExpired(token);
-        } catch (JWTVerificationException e) {
-            return false;
+            Algorithm algorithm = Algorithm.HMAC256(secretKey);
+            return JWT.create()
+                    .withIssuer(issuer)
+                    .withSubject(user.getUsername())
+                    .withExpiresAt(expirationDate())
+                    .sign(algorithm);
+        } catch (JWTCreationException exception){
+            throw new RuntimeException("Error while generating JWT token");
         }
     }
 
-    public String extractEmail(String tokenJWT) {
+    public String getSubject(String tokenJWT) {
         try {
             var algorithm = Algorithm.HMAC256(secretKey);
             return JWT.require(algorithm)
@@ -65,12 +51,20 @@ public class JwtTokenProvider {
             throw new RuntimeException("Error while validating JWT token");
         }
     }
-    
-    private boolean isTokenExpired(String tokenJWT) {
-        return JWT.require(Algorithm.HMAC256(secretKey))
-                .build()
-                .verify(tokenJWT)
-                .getExpiresAt()
-                .before(new Date());
+
+    private Instant expirationDate() {
+        return LocalDateTime.now(ZoneOffset.systemDefault())
+                .plusMinutes(expirationTimeInMinutes)
+                .toInstant(ZoneOffset.systemDefault().getRules().getOffset(LocalDateTime.now()));
+    }
+
+    public boolean tokenIsValid(String tokenJWT, PortalUser user) {
+        try {
+            var decodedJWT = JWT.decode(tokenJWT);
+            return decodedJWT.getSubject().equals(user.getUsername()) &&
+                    decodedJWT.getExpiresAt().after(new Date());
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

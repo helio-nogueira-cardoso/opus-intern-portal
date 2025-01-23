@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 @RestControllerAdvice
 public class ErrorHandler {
@@ -21,5 +22,10 @@ public class ErrorHandler {
         return ResponseEntity
                 .badRequest()
                 .body(new GenericMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    public ResponseEntity<Void> handleNotFound(NoHandlerFoundException ex) {
+        return ResponseEntity.notFound().build();
     }
 }
