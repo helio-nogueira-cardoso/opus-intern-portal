@@ -10,6 +10,9 @@ The vision for this project is to develop a comprehensive portal to streamline O
 - **Project Archive:** Document and reference projects from previous programs for future interns.
 
 This project is a work in progress and aims to incorporate feedback and new ideas as it develops.
+## Sketch of the database
+I am currently designing the future database in [Lucidchart](https://lucid.app/lucidchart/e6fad26d-8403-45b3-8f48-21925608ab42/edit?viewport_loc=-520%2C426%2C1632%2C1143%2C0_0&invitationId=inv_c865c481-569b-4030-9105-1c4fe7c72610).
+
 ## Getting Started
 
 ### Prerequisites
