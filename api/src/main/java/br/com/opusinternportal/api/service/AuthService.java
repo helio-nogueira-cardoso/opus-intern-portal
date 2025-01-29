@@ -7,24 +7,25 @@ import br.com.opusinternportal.api.dto.LoginRequest;
 import br.com.opusinternportal.api.dto.RegisterRequest;
 import br.com.opusinternportal.api.entity.PortalUser;
 import br.com.opusinternportal.api.entity.Role;
+import br.com.opusinternportal.api.entity.TempRegistration;
 import br.com.opusinternportal.api.repository.PortalUserRepository;
+import br.com.opusinternportal.api.repository.TempRegistrationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AuthService {
     @Autowired
-    private PortalUserRepository portalUserRepository;
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -33,11 +34,15 @@ public class AuthService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-    
+    private PortalUserRepository portalUserRepository;
+
+    @Autowired
+    private TempRegistrationRepository tempRegistrationRepository;
+
     @Value("${opusinternportal.email-domain}")
     private String emailDomain;
-    
+
+    @Transactional
     public GenericMessage register(RegisterRequest registerRequest) {
         if (registerRequest.role() == Role.ADMIN) {
             throw new IllegalArgumentException("Cannot register as an administrator!");
@@ -52,14 +57,40 @@ public class AuthService {
             throw new IllegalArgumentException("Email is already in use!");
         }
 
-        PortalUser portalUser = PortalUser.builder()
+        TempRegistration tempRegistration = TempRegistration.builder()
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
-                .role(Role.valueOf(registerRequest.role().toString().toUpperCase()))
+                .role(registerRequest.role())
+                .createdAt(LocalDateTime.now())
+                .expiresAt(LocalDateTime.now().plusMinutes(15))
+                .build();
+
+
+        tempRegistrationRepository.save(tempRegistration);
+
+        String id = tempRegistration.getId().toString();
+
+        return new GenericMessage(id);
+    }
+
+    @Transactional
+    public GenericMessage confirm(UUID id) {
+        TempRegistration tempRegistration = tempRegistrationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid registration ID!"));
+
+        if (tempRegistration.getExpiresAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("Registration has expired!");
+        }
+
+        PortalUser portalUser = PortalUser.builder()
+                .email(tempRegistration.getEmail())
+                .password(tempRegistration.getPassword())
+                .role(tempRegistration.getRole())
                 .build();
 
         portalUserRepository.save(portalUser);
-        return new GenericMessage("User registered successfully!");
+
+        return new GenericMessage("Registration confirmed!");
     }
 
     public JwtResponse login(LoginRequest request) {

@@ -55,6 +55,7 @@ class AuthControllerTest {
     private Optional<PortalUser> portalUserOptional;
 
     @MockitoBean
+
     private PortalUserRepository portalUserRepository;
 
     @Test
