@@ -1,65 +1,84 @@
-.login-container {
-  max-width: 350px;
+.main-container {
+  max-width: 420px;
   margin: 80px auto;
-  padding: 32px 28px 24px 28px;
+  padding: 40px 32px 32px 32px;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.10), 0 1.5px 4px rgba(0,0,0,0.08);
+  border-radius: 18px;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.13), 0 2px 8px rgba(0,0,0,0.10);
+  text-align: center;
+  font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+}
+
+.main-container h1,
+.main-container h2,
+.main-container h3,
+.main-container h4,
+.main-container h5 {
+  margin-bottom: 24px;
+  color: #2d3a4b;
+  font-weight: 700;
+  letter-spacing: 1px;
   text-align: center;
 }
 
-.login-container h2 {
-  margin-bottom: 24px;
-  color: #2d3a4b;
+.main-container p,
+.main-container span,
+.main-container label,
+.main-container div {
+  color: #374151;
+  font-size: 17px;
   font-weight: 600;
-  letter-spacing: 1px;
+  text-align: center;
 }
 
-.login-container form div {
+.main-container form div {
   margin-bottom: 18px;
-  text-align: left;
 }
 
-.login-container label {
+.main-container label {
   display: block;
   margin-bottom: 6px;
   color: #4a5568;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
 }
 
-.login-container input[type="text"],
-.login-container input[type="password"] {
+.main-container input[type="text"],
+.main-container input[type="password"] {
   width: 100%;
-  padding: 10px 12px;
+  padding: 12px 14px;
   border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 15px;
+  border-radius: 8px;
+  font-size: 16px;
   background: #f8fafc;
   transition: border 0.2s;
+  font-weight: 600;
+  text-align: center;
 }
 
-.login-container input[type="text"]:focus,
-.login-container input[type="password"]:focus {
+.main-container input[type="text"]:focus,
+.main-container input[type="password"]:focus {
   border-color: #3182ce;
   outline: none;
   background: #fff;
 }
 
-.login-container button[type="submit"] {
+.main-container button[type="submit"],
+.main-container button {
   width: 100%;
-  padding: 10px 0;
+  padding: 12px 0;
   background: #3182ce;
   color: #fff;
   border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.2s;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
-.login-container button[type="submit"]:hover {
+.main-container button[type="submit"]:hover,
+.main-container button:hover {
   background: #2563eb;
 }
