@@ -36,9 +36,6 @@ public class AuthService {
     @Autowired
     private PortalUserRepository portalUserRepository;
 
-    @Autowired
-    private TempRegistrationRepository tempRegistrationRepository;
-
     @Value("${opusinternportal.email-domain}")
     private String emailDomain;
 
@@ -57,40 +54,19 @@ public class AuthService {
             throw new IllegalArgumentException("Email is already in use!");
         }
 
-        TempRegistration tempRegistration = TempRegistration.builder()
+        PortalUser newPortalUser = PortalUser.builder()
                 .email(registerRequest.email())
                 .password(passwordEncoder.encode(registerRequest.password()))
                 .role(registerRequest.role())
                 .createdAt(LocalDateTime.now())
-                .expiresAt(LocalDateTime.now().plusMinutes(15))
                 .build();
 
 
-        tempRegistrationRepository.save(tempRegistration);
+        portalUserRepository.save(newPortalUser);
 
-        String id = tempRegistration.getId().toString();
+        String id = newPortalUser.getId().toString();
 
         return new GenericMessage(id);
-    }
-
-    @Transactional
-    public GenericMessage confirm(UUID id) {
-        TempRegistration tempRegistration = tempRegistrationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid registration ID!"));
-
-        if (tempRegistration.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("Registration has expired!");
-        }
-
-        PortalUser portalUser = PortalUser.builder()
-                .email(tempRegistration.getEmail())
-                .password(tempRegistration.getPassword())
-                .role(tempRegistration.getRole())
-                .build();
-
-        portalUserRepository.save(portalUser);
-
-        return new GenericMessage("Registration confirmed!");
     }
 
     public JwtResponse login(LoginRequest request) {

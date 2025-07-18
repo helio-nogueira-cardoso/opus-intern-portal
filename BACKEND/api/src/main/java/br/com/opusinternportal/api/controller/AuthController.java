@@ -25,12 +25,6 @@ public class AuthController {
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/confirm/{id}")
-    public ResponseEntity<GenericMessage> confirm(@PathVariable("id") UUID id) {
-        GenericMessage message = authService.confirm(id);
-        return ResponseEntity.ok(message);
-    }
-
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         JwtResponse jwtResponse = authService.login(loginRequest);
