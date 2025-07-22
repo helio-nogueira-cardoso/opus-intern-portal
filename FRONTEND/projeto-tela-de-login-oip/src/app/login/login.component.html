@@ -1,0 +1,20 @@
+<div class="login-container">
+    <h2>OPUS INTERN PORTAL</h2>
+    <form (ngSubmit)="onSubmit($event)">
+        <input 
+            type="email" 
+            placeholder="Email" 
+            name="email"
+            [(ngModel)]="email"    
+            required
+        >
+        <input 
+            type="password" 
+            placeholder="Senha" 
+            name="password"
+            [(ngModel)]="password"
+            required
+        >
+        <button type="submit">Entrar</button>
+    </form>
+</div>

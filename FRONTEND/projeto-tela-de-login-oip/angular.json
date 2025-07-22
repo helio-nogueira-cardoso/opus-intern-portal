@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "appointment-app": {
+    "projeto-tela-de-login-oip": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/appointment-app",
+            "outputPath": "dist/projeto-tela-de-login-oip",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -60,10 +60,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "appointment-app:build:production"
+              "browserTarget": "projeto-tela-de-login-oip:build:production"
             },
             "development": {
-              "browserTarget": "appointment-app:build:development"
+              "browserTarget": "projeto-tela-de-login-oip:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -71,7 +71,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "appointment-app:build"
+            "browserTarget": "projeto-tela-de-login-oip:build"
           }
         },
         "test": {
@@ -94,8 +94,5 @@
         }
       }
     }
-  },
-  "cli": {
-    "analytics": "819d6841-293c-47f1-90b1-3b8e7837857b"
   }
 }
