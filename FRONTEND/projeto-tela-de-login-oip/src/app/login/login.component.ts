@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { AuthService, LoginRequest } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,15 +10,49 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  loading: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   onSubmit(event: Event) {
     event.preventDefault();
     
-    console.log('Email:', this.email);
-    console.log('Password:', this.password);
-    
-    this.router.navigate(['/welcome']);
+    if (!this.email || !this.password) {
+      this.errorMessage = 'Por favor, preencha todos os campos.';
+      return;
+    }
+
+    this.loading = true;
+    this.errorMessage = '';
+
+    const credentials: LoginRequest = {
+      email: this.email,
+      password: this.password
+    };
+
+    this.authService.login(credentials).subscribe({
+      next: (response) => {
+        console.log('Login successful:', response);
+        this.loading = false;
+        this.router.navigate(['/welcome']);
+      },
+      error: (error) => {
+        console.error('Login error:', error);
+        this.loading = false;
+        
+        // Handle different error scenarios
+        if (error.status === 403) {
+          this.errorMessage = 'Email ou senha incorretos.';
+        } else if (error.status === 0) {
+          this.errorMessage = 'Erro de conexão com o servidor.';
+        } else {
+          this.errorMessage = 'Erro interno do servidor. Tente novamente.';
+        }
+      }
+    });
   }
 }

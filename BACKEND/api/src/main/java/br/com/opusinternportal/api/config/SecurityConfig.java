@@ -28,12 +28,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(cors -> cors.disable()) // Disable Spring Security CORS to use global config
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight
+                    .requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll() // Allow GET for testing
                     .requestMatchers(
                             "/v3/api-docs/**",
                             "/swagger-ui.html",

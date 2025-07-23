@@ -15,6 +15,10 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/auth")
+@CrossOrigin(
+    origins = {"http://localhost:4200", "http://127.0.0.1:4200"}, 
+    allowCredentials = "false"
+)
 public class AuthController {
     @Autowired
     private AuthService authService;

@@ -1,0 +1,79 @@
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  token: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService {
+  private readonly API_URL = 'http://localhost:8080/api'; // Test with full URL first
+  private tokenSubject: BehaviorSubject<string | null>;
+  public token: Observable<string | null>;
+
+  constructor(private http: HttpClient) {
+    this.tokenSubject = new BehaviorSubject<string | null>(localStorage.getItem('token'));
+    this.token = this.tokenSubject.asObservable();
+  }
+
+  public get tokenValue(): string | null {
+    return this.tokenSubject.value;
+  }
+
+  login(credentials: LoginRequest): Observable<LoginResponse> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    console.log('Attempting login to:', `${this.API_URL}/auth/login`);
+    console.log('Credentials:', { email: credentials.email, password: '***' });
+
+    return this.http.post<LoginResponse>(`${this.API_URL}/auth/login`, credentials, { 
+      headers,
+      withCredentials: false // Don't send credentials with CORS
+    })
+      .pipe(
+        map(response => {
+          console.log('Login response:', response);
+          // Store JWT token in localStorage
+          if (response.token) {
+            localStorage.setItem('token', response.token);
+            this.tokenSubject.next(response.token);
+          }
+          return response;
+        }),
+        catchError(error => {
+          console.error('Login error:', error);
+          return throwError(() => error);
+        })
+      );
+  }
+
+  logout(): void {
+    // Remove token from localStorage
+    localStorage.removeItem('token');
+    this.tokenSubject.next(null);
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.tokenValue;
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    const token = this.tokenValue;
+    return new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+  }
+}

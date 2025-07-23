@@ -7,6 +7,7 @@
             name="email"
             [(ngModel)]="email"    
             required
+            [disabled]="loading"
         >
         <input 
             type="password" 
@@ -14,7 +15,17 @@
             name="password"
             [(ngModel)]="password"
             required
+            [disabled]="loading"
         >
-        <button type="submit">Entrar</button>
+        
+        <!-- Error message display -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
+        
+        <button type="submit" [disabled]="loading">
+            <span *ngIf="loading">Entrando...</span>
+            <span *ngIf="!loading">Entrar</span>
+        </button>
     </form>
 </div>
