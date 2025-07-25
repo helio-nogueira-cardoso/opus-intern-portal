@@ -1,0 +1,86 @@
+<div class="register-container">
+    <h2>OPUS INTERN PORTAL</h2>
+    <h3>Criar Nova Conta</h3>
+    
+    <form (ngSubmit)="onSubmit($event)">
+        <input 
+            type="email" 
+            placeholder="Email" 
+            name="email"
+            [(ngModel)]="email"    
+            required
+            [disabled]="loading"
+        >
+        
+        <input 
+            type="password" 
+            placeholder="Senha" 
+            name="password"
+            [(ngModel)]="password"
+            required
+            [disabled]="loading"
+            [class.password-valid]="password.length >= 6 && password.length > 0"
+            [class.password-invalid]="password.length > 0 && password.length < 6"
+        >
+        
+        <!-- Indicador de força da senha -->
+        <div *ngIf="password.length > 0" class="password-strength">
+            <span *ngIf="password.length < 6" class="strength-weak">
+                ⚠️ Senha deve ter pelo menos 6 caracteres
+            </span>
+            <span *ngIf="password.length >= 6" class="strength-good">
+                ✅ Senha válida
+            </span>
+        </div>
+        
+        <input 
+            type="password" 
+            placeholder="Confirmar Senha" 
+            name="confirmPassword"
+            [(ngModel)]="confirmPassword"
+            required
+            [disabled]="loading"
+            [class.password-match]="passwordsMatch && confirmPassword.length > 0"
+            [class.password-mismatch]="showPasswordMismatch"
+        >
+        
+        <!-- Indicador de confirmação de senha -->
+        <div *ngIf="confirmPassword.length > 0" class="password-confirmation">
+            <span *ngIf="passwordsMatch" class="match-success">
+                ✅ Senhas coincidem
+            </span>
+            <span *ngIf="showPasswordMismatch" class="match-error">
+                ❌ Senhas não coincidem
+            </span>
+        </div>
+        
+        <select 
+            name="role"
+            [(ngModel)]="role"
+            required
+            [disabled]="loading"
+        >
+            <option value="INTERN">Estagiário</option>
+            <option value="MENTOR">Mentor</option>
+        </select>
+        
+        <a (click)="goToLogin()" style="cursor: pointer;">
+            Já possuo uma conta. Fazer login
+        </a>
+        
+        <!-- Success message display -->
+        <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+        </div>
+        
+        <!-- Error message display -->
+        <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+        </div>
+        
+        <button type="submit" [disabled]="loading || !isFormValid">
+            <span *ngIf="loading">Registrando...</span>
+            <span *ngIf="!loading">Registrar</span>
+        </button>
+    </form>
+</div>

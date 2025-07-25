@@ -1,4 +1,4 @@
-.login-container {
+.register-container {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,14 +10,23 @@
     position: relative;
 }
 
-.login-container h2 {
+.register-container h2 {
     color: #b02a37;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-size: 2.5rem;
     font-weight: 400;
     text-align: center;
     letter-spacing: 1px;
     text-shadow: 0 2px 6px rgba(176, 42, 55, 0.08);
+}
+
+.register-container h3 {
+    color: #b02a37;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 300;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 form {
@@ -35,7 +44,7 @@ form {
     z-index: 1;
 }
 
-input {
+input, select {
     padding: 1rem 1.25rem;
     border: 1.5px solid #e9e4d8;
     border-radius: 10px;
@@ -46,10 +55,52 @@ input {
     color: #3a2c23;
 }
 
-input:focus {
+input:focus, select:focus {
     border-color: #b02a37;
     background-color: #fff;
     box-shadow: 0 0 0 2px rgba(176, 42, 55, 0.08);
+}
+
+/* Validação de senha */
+input.password-valid {
+    border-color: #4caf50;
+    background-color: #f1f8e9;
+}
+
+input.password-invalid {
+    border-color: #f44336;
+    background-color: #ffebee;
+}
+
+input.password-match {
+    border-color: #4caf50;
+    background-color: #f1f8e9;
+}
+
+input.password-mismatch {
+    border-color: #f44336;
+    background-color: #ffebee;
+}
+
+/* Indicadores de validação */
+.password-strength, .password-confirmation {
+    font-size: 0.8rem;
+    margin-top: -0.8rem;
+    margin-bottom: 0.5rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 5px;
+}
+
+.strength-weak, .match-error {
+    color: #d32f2f;
+    background-color: #ffebee;
+    border: 1px solid #ffcdd2;
+}
+
+.strength-good, .match-success {
+    color: #2e7d32;
+    background-color: #e8f5e8;
+    border: 1px solid #c8e6c9;
 }
 
 input::placeholder {
@@ -57,18 +108,26 @@ input::placeholder {
     font-weight: 400;
 }
 
+select {
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23a89d91" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    padding-right: 3rem;
+}
+
 a {
     color: #b02a37;
     text-decoration: none;
     font-size: 0.9rem;
-    font-weight: 500;
     text-align: center;
+    transition: color 0.3s;
 }
 
 a:hover {
-    color: #a1272f;
+    color: #8a1f29;
     text-decoration: underline;
-    cursor: pointer;
 }
 
 button {
@@ -114,26 +173,41 @@ button:disabled {
     margin-bottom: 0.5rem;
 }
 
+.success-message {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: 1px solid #c8e6c9;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
 @media (max-width: 480px) {
-    .login-container {
+    .register-container {
         padding: 10px;
     }
-    .login-container h2 {
+    .register-container h2 {
         font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+    .register-container h3 {
+        font-size: 1.2rem;
         margin-bottom: 1.2rem;
     }
     form {
         padding: 1.5rem 1rem;
         max-width: 340px;
     }
-    input, button {
+    input, select, button {
         padding: 0.85rem 1rem;
         font-size: 0.97rem;
     }
 }
 
 /* Subtle grain overlay for modern touch */
-.login-container::before {
+.register-container::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
