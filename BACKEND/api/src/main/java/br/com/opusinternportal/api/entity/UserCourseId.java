@@ -11,6 +11,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class UserCourseId implements Serializable {
-    private UUID user;
+    private PortalUser user;
     private UUID course;
 }
