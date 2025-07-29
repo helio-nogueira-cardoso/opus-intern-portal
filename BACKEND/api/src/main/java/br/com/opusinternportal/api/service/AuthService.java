@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class AuthService {
@@ -74,6 +73,9 @@ public class AuthService {
                 (PortalUser) authentication.getPrincipal()
         );
 
-        return new JwtResponse(jwtToken);
+        return new JwtResponse(
+                jwtToken,
+                ((PortalUser) authentication.getPrincipal()).getId()
+        );
     }
 }
