@@ -49,6 +49,9 @@ public class CourseService {
     }
 
     public List<Course> getCoursesDoneByUser(UUID userId) {
-        return userCourseRepository.findByUserId(userId);
+        return userCourseRepository.findByUserId(userId)
+                .stream()
+                .map(UserCourse::getCourse)
+                .toList();
     }
 }

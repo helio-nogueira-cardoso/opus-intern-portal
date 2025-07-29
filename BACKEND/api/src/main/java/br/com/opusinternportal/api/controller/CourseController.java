@@ -2,6 +2,7 @@ package br.com.opusinternportal.api.controller;
 
 import br.com.opusinternportal.api.entity.Course;
 import br.com.opusinternportal.api.service.CourseService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ public class CourseController {
     }
 
     @DeleteMapping("/{userId}/{courseId}")
+    @Transactional
     public ResponseEntity<Void> unmark(@PathVariable UUID userId, @PathVariable UUID courseId) {
         courseService.unmarkCourse(userId, courseId);
         return ResponseEntity.noContent().build();
