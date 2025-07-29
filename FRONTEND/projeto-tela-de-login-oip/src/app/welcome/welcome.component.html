@@ -7,6 +7,46 @@
         <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </div>
+    
+    <!-- Seção de Cursos -->
+    <div class="courses-section">
+      <h2>Cursos Disponíveis</h2>
+      
+      <!-- Loading -->
+      <div *ngIf="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Carregando cursos...</p>
+      </div>
+      
+      <!-- Error -->
+      <div *ngIf="error" class="error-message">
+        <p>{{ error }}</p>
+        <button class="retry-button" (click)="retryLoadCourses()">Tentar Novamente</button>
+      </div>
+      
+      <!-- Courses List -->
+      <div *ngIf="!loading && !error" class="courses-grid">
+        <div *ngFor="let course of courses" 
+             class="course-card" 
+             [class.completed]="isCourseCompleted(course.id)"
+             (click)="toggleCourseCompletion(course.id)">
+          <div class="course-status">
+            <div class="status-icon">
+              <svg *ngIf="isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg *ngIf="!isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </div>
+            <span class="status-text">{{ isCourseCompleted(course.id) ? 'Concluído' : 'Pendente' }}</span>
+          </div>
+          <h3>{{ course.title }}</h3>
+          <p>{{ course.description }}</p>
+        </div>
+      </div>
+    </div>
+    
     <button class="back-button" (click)="goBack()">Voltar ao Login</button>
   </div>
 </div>

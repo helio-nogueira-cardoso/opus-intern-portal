@@ -17,6 +17,7 @@ export interface RegisterRequest {
 
 export interface LoginResponse {
   token: string;
+  id: string;
 }
 
 export interface RegisterResponse {
@@ -58,6 +59,7 @@ export class AuthService {
           // Store JWT token in localStorage
           if (response.token) {
             localStorage.setItem('token', response.token);
+            localStorage.setItem('uuid', response.id);
             this.tokenSubject.next(response.token);
           }
           return response;
@@ -110,6 +112,7 @@ export class AuthService {
   logout(): void {
     // Remove token from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('uuid');
     this.tokenSubject.next(null);
   }
 
