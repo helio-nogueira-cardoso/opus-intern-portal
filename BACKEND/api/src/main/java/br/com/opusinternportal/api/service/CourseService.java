@@ -28,6 +28,20 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
+    public void addCourse(Course course) {
+        if (course.getId() != null && courseRepository.existsById(course.getId())) {
+            throw new IllegalArgumentException("Course with this ID already exists.");
+        }
+        courseRepository.save(course);
+    }
+
+    public void deleteCourse(UUID courseId) {
+        if (!courseRepository.existsById(courseId)) {
+            throw new IllegalArgumentException("Course not found with id: " + courseId);
+        }
+        courseRepository.deleteById(courseId);
+    }
+
     public void markCourseAsDone(UUID userId, UUID courseId) {
        PortalUser user = portalUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));

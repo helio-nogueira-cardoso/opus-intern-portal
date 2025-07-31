@@ -75,7 +75,8 @@ public class AuthService {
 
         return new JwtResponse(
                 jwtToken,
-                ((PortalUser) authentication.getPrincipal()).getId()
+                ((PortalUser) authentication.getPrincipal()).getId(),
+                ((PortalUser) authentication.getPrincipal()).getRole()
         );
     }
 }

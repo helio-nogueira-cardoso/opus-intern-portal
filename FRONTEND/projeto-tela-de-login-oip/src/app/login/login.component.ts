@@ -38,7 +38,17 @@ export class LoginComponent {
       next: (response) => {
         console.log('Login successful:', response);
         this.loading = false;
-        this.router.navigate(['/welcome']);
+
+        if (response.role === 'INTERN') {
+          this.router.navigate(['/welcome']);
+        }
+        else if (response.role === 'MENTOR') {
+          this.router.navigate(['/mentor-dashboard']);
+        } else if (response.role === 'ADMIN') {
+          this.router.navigate(['/admin-dashboard']);
+        } else {
+          this.errorMessage = 'Role desconhecida. Acesso negado.';
+        }
       },
       error: (error) => {
         console.error('Login error:', error);

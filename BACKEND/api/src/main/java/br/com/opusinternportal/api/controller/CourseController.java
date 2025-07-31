@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,20 @@ public class CourseController {
     @GetMapping
     public List<Course> listAll() {
         return courseService.listAllCourses();
+    }
+
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
+    public ResponseEntity<Void> addCourse(@RequestBody Course course) {
+        courseService.addCourse(course);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{courseId}")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MENTOR')")
+    public ResponseEntity<Void> deleteCourse(@PathVariable UUID courseId) {
+        courseService.deleteCourse(courseId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{userId}/{courseId}")

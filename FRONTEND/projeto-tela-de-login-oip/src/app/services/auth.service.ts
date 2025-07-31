@@ -18,6 +18,7 @@ export interface RegisterRequest {
 export interface LoginResponse {
   token: string;
   id: string;
+  role: 'MENTOR' | 'INTERN' | 'ADMIN';
 }
 
 export interface RegisterResponse {
@@ -59,9 +60,10 @@ export class AuthService {
           // Store JWT token in localStorage
           if (response.token) {
             localStorage.setItem('token', response.token);
-            localStorage.setItem('uuid', response.id);
             this.tokenSubject.next(response.token);
           }
+          localStorage.setItem('uuid', response.id);
+          localStorage.setItem('role', response.role);
           return response;
         }),
         catchError(error => {

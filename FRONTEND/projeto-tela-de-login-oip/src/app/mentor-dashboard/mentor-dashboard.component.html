@@ -1,0 +1,109 @@
+<div class="mentor-container">
+  <div class="mentor-content">
+    <h1>Dashboard do Mentor</h1>
+    <p class="mentor-message">Gerencie cursos e visualize usuários cadastrados</p>
+    
+    <div class="dashboard-grid">
+      <!-- 1. Formulário para criar novo curso -->
+      <div class="dashboard-card">
+        <h2>Criar Novo Curso</h2>
+        <form (ngSubmit)="createCourse()" class="course-form">
+          <div class="form-group">
+            <label for="courseTitle">Título do Curso</label>
+            <input 
+              type="text" 
+              id="courseTitle" 
+              [(ngModel)]="newCourse.title" 
+              name="title"
+              placeholder="Digite o título do curso"
+              required>
+          </div>
+          
+          <div class="form-group">
+            <label for="courseDescription">Descrição</label>
+            <textarea 
+              id="courseDescription" 
+              [(ngModel)]="newCourse.description" 
+              name="description"
+              placeholder="Digite a descrição do curso"
+              rows="4"
+              required></textarea>
+          </div>
+          
+          <button type="submit" class="create-button" [disabled]="!newCourse.title || !newCourse.description">
+            Criar Curso
+          </button>
+        </form>
+      </div>
+
+      <!-- 2. Lista de cursos existentes -->
+      <div class="dashboard-card">
+        <h2>Cursos Existentes</h2>
+        
+        <!-- Loading -->
+        <div *ngIf="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando cursos...</p>
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="error" class="error-message">
+          <p>{{ error }}</p>
+          <button class="retry-button" (click)="loadCourses()">Tentar Novamente</button>
+        </div>
+        
+        <!-- Courses List -->
+        <div *ngIf="!loading && !error" class="courses-list">
+          <div *ngFor="let course of courses" class="course-item">
+            <div class="course-info">
+              <h3>{{ course.title }}</h3>
+              <p>{{ course.description }}</p>
+            </div>
+            <button class="delete-button" (click)="deleteCourse(course.id)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          
+          <div *ngIf="courses.length === 0" class="empty-message">
+            <p>Nenhum curso encontrado</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Lista de usuários -->
+      <div class="dashboard-card">
+        <h2>Usuários Cadastrados</h2>
+        
+        <!-- Loading -->
+        <div *ngIf="loadingUsers" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando usuários...</p>
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="userError" class="error-message">
+          <p>{{ userError }}</p>
+          <button class="retry-button" (click)="loadUsers()">Tentar Novamente</button>
+        </div>
+        
+        <!-- Users List -->
+        <div *ngIf="!loadingUsers && !userError" class="users-list">
+          <div *ngFor="let user of users" class="user-item">
+            <div class="user-info">
+              <span class="user-email">{{ user.email }}</span>
+              <span class="user-role">{{ user.role || 'Usuário' }}</span>
+            </div>
+          </div>
+          
+          <div *ngIf="users.length === 0" class="empty-message">
+            <p>Nenhum usuário encontrado</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <button class="back-button" (click)="goBack()">Voltar</button>
+  </div>
+</div>

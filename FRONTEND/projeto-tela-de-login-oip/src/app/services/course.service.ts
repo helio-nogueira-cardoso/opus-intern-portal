@@ -10,6 +10,11 @@ export interface Course {
   description: string;
 }
 
+export interface CreateCourseRequest {
+  title: string;
+  description: string;
+}
+
 export interface CompletedCourse {
   courseId: string;
   userId: string;
@@ -140,5 +145,33 @@ export class CourseService {
       next: () => console.log('Cursos concluídos atualizados'),
       error: (error) => console.error('Erro ao atualizar cursos concluídos:', error)
     });
+  }
+
+  createCourse(course: CreateCourseRequest) : Observable<Course> {
+    console.log('Criando curso:', course);
+    
+    return this.http.post<Course>(`${this.baseUrl}/api/course`, course, {
+      headers: this.authService.getAuthHeaders()
+    }).pipe(
+      tap(newCourse => console.log('Curso criado com sucesso:', newCourse)),
+      catchError(error => {
+        console.error('Erro ao criar curso:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
+  deleteCourse(courseId: string): Observable<void> {
+    console.log('Excluindo curso com ID:', courseId);
+    
+    return this.http.delete<void>(`${this.baseUrl}/api/course/${courseId}`, {
+      headers: this.authService.getAuthHeaders()
+    }).pipe(
+      tap(() => console.log('Curso excluído com sucesso')),
+      catchError(error => {
+        console.error('Erro ao excluir curso:', error);
+        return throwError(() => error);
+      })
+    );
   }
 }
