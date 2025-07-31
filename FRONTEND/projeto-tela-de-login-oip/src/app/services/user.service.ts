@@ -52,12 +52,11 @@ export class UserService {
   getUsers(): Observable<User[]> {
     const headers = this.getAuthHeaders();
     
-    console.log('Fetching users from:', `${this.API_URL}/portal-user`);
+    console.log('Fetching users from:', `${this.API_URL}/portal-user/interns`);
     console.log('Headers:', headers);
-    
-    return this.http.get<User[]>(`${this.API_URL}/portal-user`, { 
-      headers,
-      withCredentials: false 
+
+    return this.http.get<User[]>(`${this.API_URL}/portal-user/interns`, {
+      headers
     })
     .pipe(
       map(response => {
