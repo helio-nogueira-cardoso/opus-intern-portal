@@ -1,15 +1,16 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { CourseService, Course, CreateCourseRequest } from '../services/course.service';
 import { UserService, User } from '../services/user.service';
-import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-mentor-dashboard',
   templateUrl: './mentor-dashboard.component.html',
   styleUrls: ['./mentor-dashboard.component.css']
 })
-export class MentorDashboardComponent implements OnInit, OnDestroy {
+export class MentorDashboardComponent implements OnInit {
   courses: Course[] = [];
   users: User[] = [];
   loading = false;
@@ -21,10 +22,11 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
     title: '',
     description: ''
   };
-  
-  private subscription = new Subscription();
+
+  private destroyRef = inject(DestroyRef);
 
   constructor(
+    private authService: AuthService,
     private router: Router,
     private courseService: CourseService,
     private userService: UserService
@@ -35,10 +37,6 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
     this.loadUsers();
   }
 
-  ngOnDestroy() {
-    this.subscription.unsubscribe();
-  }
-
   /**
    * Carrega todos os cursos
    */
@@ -46,20 +44,20 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = '';
 
-    const coursesSub = this.courseService.getCourses().subscribe({
-      next: (courses) => {
-        console.log('Cursos carregados:', courses);
-        this.courses = courses;
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar cursos:', error);
-        this.error = 'Erro ao carregar cursos. Tente novamente.';
-        this.loading = false;
-      }
-    });
-
-    this.subscription.add(coursesSub);
+    this.courseService.getCourses()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (courses) => {
+          console.log('Cursos carregados:', courses);
+          this.courses = courses;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar cursos:', error);
+          this.error = 'Erro ao carregar cursos. Tente novamente.';
+          this.loading = false;
+        }
+      });
   }
 
   /**
@@ -69,20 +67,20 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
     this.loadingUsers = true;
     this.userError = '';
 
-    const usersSub = this.userService.getUsers().subscribe({
-      next: (users) => {
-        console.log('Usuários carregados:', users);
-        this.users = users;
-        this.loadingUsers = false;
-      },
-      error: (error) => {
-        console.error('Erro ao carregar usuários:', error);
-        this.userError = 'Erro ao carregar usuários. Tente novamente.';
-        this.loadingUsers = false;
-      }
-    });
-
-    this.subscription.add(usersSub);
+    this.userService.getUsers()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (users) => {
+          console.log('Usuários carregados:', users);
+          this.users = users;
+          this.loadingUsers = false;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar usuários:', error);
+          this.userError = 'Erro ao carregar usuários. Tente novamente.';
+          this.loadingUsers = false;
+        }
+      });
   }
 
   /**
@@ -97,21 +95,23 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
     this.loading = true;
     this.error = '';
 
-    const createSub = this.courseService.createCourse(this.newCourse).subscribe({
-      next: (course) => {
-        console.log('Curso criado com sucesso:', course);
-        this.courses.push(course);
-        this.newCourse = { title: '', description: '' }; // Limpa o formulário
-        this.loading = false;
-      },
-      error: (error) => {
-        console.error('Erro ao criar curso:', error);
-        this.error = 'Erro ao criar curso. Tente novamente.';
-        this.loading = false;
-      }
-    });
+    this.courseService.createCourse(this.newCourse)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (course) => {
+          console.log('Curso criado com sucesso:', course);
+          this.courses.push(course);
+          this.newCourse = { title: '', description: '' }; // Limpa o formulário
+          this.loading = false;
+          this.loadCourses(); // Recarrega a lista de cursos
+        },
+        error: (error) => {
+          console.error('Erro ao criar curso:', error);
+          this.error = 'Erro ao criar curso. Tente novamente.';
+          this.loading = false;
+        }
+      });
 
-    this.subscription.add(createSub);
   }
 
   /**
@@ -122,29 +122,30 @@ export class MentorDashboardComponent implements OnInit, OnDestroy {
       return;
     }
 
-    const deleteSub = this.courseService.deleteCourse(courseId).subscribe({
-      next: () => {
-        console.log('Curso excluído com sucesso');
-        this.courses = this.courses.filter(course => course.id !== courseId);
-      },
-      error: (error) => {
-        console.error('Erro ao excluir curso:', error);
-        this.error = 'Erro ao excluir curso. Tente novamente.';
-        
-        // Remove a mensagem de erro após 3 segundos
-        setTimeout(() => {
-          this.error = '';
-        }, 3000);
-      }
-    });
-
-    this.subscription.add(deleteSub);
+    this.courseService.deleteCourse(courseId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          console.log('Curso excluído com sucesso');
+          this.courses = this.courses.filter(course => course.id !== courseId);
+        },
+        error: (error) => {
+          console.error('Erro ao excluir curso:', error);
+          this.error = 'Erro ao excluir curso. Tente novamente.';
+          
+          // Remove a mensagem de erro após 3 segundos
+          setTimeout(() => {
+            this.error = '';
+          }, 3000);
+        }
+      });
   }
 
   /**
    * Volta para a tela anterior
    */
-  goBack() {
-    this.router.navigate(['/welcome']);
+  logout() {
+    this.authService.logout(); // Logout do usuário
+    this.router.navigate(['/login']);
   }
 }
