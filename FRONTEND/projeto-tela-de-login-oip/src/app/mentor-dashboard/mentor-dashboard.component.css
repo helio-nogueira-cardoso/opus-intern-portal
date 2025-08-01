@@ -248,12 +248,25 @@
   margin-bottom: 1rem;
   background: #fff;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .user-item:hover {
   background: #f9f9f9;
   border-color: #b02a37;
   transform: translateX(5px);
+}
+
+/* Estilo para usuário selecionado */
+.user-item.selected {
+  background: #f0f8ff;
+  border-color: #b02a37;
+  box-shadow: 0 2px 8px rgba(176, 42, 55, 0.15);
+  transform: translateX(3px);
+}
+
+.user-item.selected:hover {
+  background: #e6f3ff;
 }
 
 .user-info {

@@ -12,6 +12,9 @@ import { AuthService } from '../services/auth.service';
 })
 export class MentorDashboardComponent implements OnInit {
   courses: Course[] = [];
+  completedCourses: Course[] = [];
+
+  selectedUserIndex: number | null = null;
   users: User[] = [];
   loading = false;
   loadingUsers = false;
@@ -38,6 +41,15 @@ export class MentorDashboardComponent implements OnInit {
   }
 
   /**
+   * Seleciona um usuário para ver os cursos concluídos
+   * @param userIndex Índice do usuário selecionado
+   */
+  selectUser(userIndex: number) {
+    this.selectedUserIndex = userIndex;
+    this.loadCompletedCourses(this.users[userIndex].id);
+  }
+
+  /**
    * Carrega todos os cursos
    */
   loadCourses() {
@@ -55,6 +67,25 @@ export class MentorDashboardComponent implements OnInit {
         error: (error) => {
           console.error('Erro ao carregar cursos:', error);
           this.error = 'Erro ao carregar cursos. Tente novamente.';
+          this.loading = false;
+        }
+      });
+  }
+
+  loadCompletedCourses(userId: string) {
+    this.loading = true;
+    this.completedCourses = []; // Limpa os cursos concluídos antes de carregar novos 
+    this.courseService.getCompletedCourses(userId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (courses) => {
+          console.log('Cursos concluídos carregados:', courses);
+          this.completedCourses = courses;
+          this.loading = false;
+        },
+        error: (error) => {
+          console.error('Erro ao carregar cursos concluídos:', error);
+          this.error = 'Erro ao carregar cursos concluídos. Tente novamente.';
           this.loading = false;
         }
       });

@@ -161,6 +161,19 @@ export class CourseService {
     );
   }
 
+  getCompletedCourses(userId: string): Observable<Course[]> {
+    console.log('Buscando cursos concluídos para usuário:', userId);
+    return this.http.get<Course[]>(`${this.baseUrl}/api/course/done/${userId}`, {
+      headers: this.authService.getAuthHeaders()
+    }).pipe(
+      tap(courses => console.log('Cursos concluídos recebidos:', courses)),
+      catchError(error => {
+        console.error('Erro ao buscar cursos concluídos:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+
   deleteCourse(courseId: string): Observable<void> {
     console.log('Excluindo curso com ID:', courseId);
     

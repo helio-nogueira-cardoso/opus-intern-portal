@@ -1,7 +1,7 @@
 <div class="mentor-container">
   <div class="mentor-content">
     <h1>Dashboard do Mentor</h1>
-    <p class="mentor-message">Gerencie cursos e visualize usuários cadastrados</p>
+    <p class="mentor-message">Gerencie cursos e visualize estagiários cadastrados</p>
     
     <div class="dashboard-grid">
       <!-- 1. Formulário para criar novo curso -->
@@ -74,7 +74,7 @@
 
       <!-- 3. Lista de usuários -->
       <div class="dashboard-card">
-        <h2>Usuários Cadastrados</h2>
+        <h2>Estagiários Cadastrados</h2>
         
         <!-- Loading -->
         <div *ngIf="loadingUsers" class="loading">
@@ -90,7 +90,10 @@
         
         <!-- Users List -->
         <div *ngIf="!loadingUsers && !userError" class="users-list">
-          <div *ngFor="let user of users" class="user-item">
+          <div *ngFor="let user of users; let i = index" 
+               class="user-item" 
+               [class.selected]="selectedUserIndex === i"
+               (click)="selectUser(i)">
             <div class="user-info">
               <span class="user-email">{{ user.email }}</span>
               <span class="user-role">{{ user.role || 'Usuário' }}</span>
@@ -103,7 +106,20 @@
         </div>
       </div>
     </div>
-    
-    <button class="back-button" (click)="logout()">Logout</button>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+          <h2>Cursos Concluídos por Estagiário</h2>
+            <p *ngIf="selectedUserIndex === null">Selecione um estagiário para ver os cursos concluídos.</p>
+            <div *ngIf="selectedUserIndex!== null" class="completed-courses">
+            <h3>Estagiário: {{ this.users[selectedUserIndex].email }}</h3>
+            <ul *ngIf="completedCourses.length > 0">
+              <li *ngFor="let course of completedCourses">{{ course.title }}</li>
+            </ul>
+            <p *ngIf="completedCourses.length === 0">Nenhum curso concluído encontrado.</p>
+      </div>
+    </div>
   </div>
+  
+  <button class="back-button" (click)="logout()">Logout</button>
 </div>
