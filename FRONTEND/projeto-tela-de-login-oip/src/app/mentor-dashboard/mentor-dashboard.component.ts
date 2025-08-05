@@ -28,6 +28,17 @@ export class MentorDashboardComponent implements OnInit {
 
   private destroyRef = inject(DestroyRef);
 
+  activeTab: string = 'geral';
+  
+  newInternshipProgram = {
+    title: '',
+    description: '',
+    startDate: '',
+    endDate: ''
+  };
+
+  selectedCourses: string[] = [];
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -172,11 +183,96 @@ export class MentorDashboardComponent implements OnInit {
       });
   }
 
-  /**
-   * Volta para a tela anterior
-   */
+  // Logout do usuário
   logout() {
-    this.authService.logout(); // Logout do usuário
+    this.authService.logout(); 
     this.router.navigate(['/login']);
+  }
+
+  // Adicione este método
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+  }
+
+  // Adicione este método
+  toggleCourseSelection(courseId: string): void {
+    const index = this.selectedCourses.indexOf(courseId);
+    if (index === -1) {
+      // Adiciona o curso se não estiver selecionado
+      this.selectedCourses.push(courseId);
+    } else {
+      // Remove o curso se já estiver selecionado
+      this.selectedCourses.splice(index, 1);
+    }
+  }
+
+  createInternshipProgram(): void {
+    const mentorId = localStorage.getItem('uuid');
+
+    if (!mentorId) {
+      console.error('ID do mentor não encontrado no localStorage');
+      return;
+    }
+
+    const programData = {
+      title: this.newInternshipProgram.title,
+      description: this.newInternshipProgram.description,
+      startDate: this.newInternshipProgram.startDate,
+      endDate: this.newInternshipProgram.endDate,
+      mentorId: mentorId
+    };
+
+    fetch('http://localhost:8080/api/internship', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(programData)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro ao criar programa de estágio');
+      }
+      return response.json(); 
+    })
+    .then(data => {
+      const newInternshipId = data.message; 
+
+      console.log('Programa de estágio criado com sucesso!');
+      console.log('Novo ID do programa de estágio:', newInternshipId);
+
+      // Limpar o formulário
+      this.newInternshipProgram = {
+        title: '',
+        description: '',
+        startDate: '',
+        endDate: ''
+      };
+
+      // Associar os cursos ao novo programa
+      for (const courseId of this.selectedCourses) {
+        fetch(`http://localhost:8080/api/internship/${newInternshipId}/course/${courseId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(courseResponse => {
+          if (!courseResponse.ok) {
+            throw new Error('Erro ao associar curso ao programa de estágio');
+          }
+        })
+        .catch(error => {
+          console.error('Erro ao associar curso:', error);
+        });
+      }
+
+      // Resetar cursos selecionados
+      this.selectedCourses = [];
+
+    })
+    .catch(error => {
+      console.error('Erro:', error);
+    });
   }
 }

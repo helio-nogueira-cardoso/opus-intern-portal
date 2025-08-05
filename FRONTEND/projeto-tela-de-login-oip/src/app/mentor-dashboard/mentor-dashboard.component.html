@@ -3,123 +3,259 @@
     <h1>Dashboard do Mentor</h1>
     <p class="mentor-message">Gerencie cursos e visualize estagiários cadastrados</p>
     
-    <div class="dashboard-grid">
-      <!-- 1. Formulário para criar novo curso -->
-      <div class="dashboard-card">
-        <h2>Criar Novo Curso</h2>
-        <form (ngSubmit)="createCourse()" class="course-form">
-          <div class="form-group">
-            <label for="courseTitle">Título do Curso</label>
-            <input 
-              type="text" 
-              id="courseTitle" 
-              [(ngModel)]="newCourse.title" 
-              name="title"
-              placeholder="Digite o título do curso"
-              required>
-          </div>
-          
-          <div class="form-group">
-            <label for="courseDescription">Descrição</label>
-            <textarea 
-              id="courseDescription" 
-              [(ngModel)]="newCourse.description" 
-              name="description"
-              placeholder="Digite a descrição do curso"
-              rows="4"
-              required></textarea>
-          </div>
-          
-          <button type="submit" class="create-button" [disabled]="!newCourse.title || !newCourse.description">
-            Criar Curso
+    <!-- Navigation Bar -->
+    <nav class="mentor-navbar">
+      <ul class="nav-items">
+        <li class="nav-item">
+          <button 
+            class="nav-button" 
+            [class.active]="activeTab === 'geral'"
+            (click)="setActiveTab('geral')">
+            Geral
           </button>
-        </form>
-      </div>
+        </li>
+        <li class="nav-item">
+          <button 
+            class="nav-button" 
+            [class.active]="activeTab === 'track'"
+            (click)="setActiveTab('track')">
+            Track
+          </button>
+        </li>
+      </ul>
+    </nav>
 
-      <!-- 2. Lista de cursos existentes -->
-      <div class="dashboard-card">
-        <h2>Cursos Existentes</h2>
-        
-        <!-- Loading -->
-        <div *ngIf="loading" class="loading">
-          <div class="spinner"></div>
-          <p>Carregando cursos...</p>
-        </div>
-        
-        <!-- Error -->
-        <div *ngIf="error" class="error-message">
-          <p>{{ error }}</p>
-          <button class="retry-button" (click)="loadCourses()">Tentar Novamente</button>
-        </div>
-        
-        <!-- Courses List -->
-        <div *ngIf="!loading && !error" class="courses-list">
-          <div *ngFor="let course of courses" class="course-item">
-            <div class="course-info">
-              <h3>{{ course.title }}</h3>
-              <p>{{ course.description }}</p>
+    <!-- Geral Tab Content -->
+    <div *ngIf="activeTab === 'geral'" class="tab-content">
+      <div class="dashboard-grid">
+        <!-- 1. Formulário para criar novo curso -->
+        <div class="dashboard-card">
+          <h2>Criar Novo Curso</h2>
+          <form (ngSubmit)="createCourse()" class="course-form">
+            <div class="form-group">
+              <label for="courseTitle">Título do Curso</label>
+              <input 
+                type="text" 
+                id="courseTitle" 
+                [(ngModel)]="newCourse.title" 
+                name="title"
+                placeholder="Digite o título do curso"
+                required>
             </div>
-            <button class="delete-button" (click)="deleteCourse(course.id)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
+            
+            <div class="form-group">
+              <label for="courseDescription">Descrição</label>
+              <textarea 
+                id="courseDescription" 
+                [(ngModel)]="newCourse.description" 
+                name="description"
+                placeholder="Digite a descrição do curso"
+                rows="4"
+                required></textarea>
+            </div>
+            
+            <button type="submit" class="create-button" [disabled]="!newCourse.title || !newCourse.description">
+              Criar Curso
             </button>
+          </form>
+        </div>
+
+        <!-- 2. Lista de cursos existentes -->
+        <div class="dashboard-card">
+          <h2>Cursos Existentes</h2>
+          
+          <!-- Loading -->
+          <div *ngIf="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando cursos...</p>
           </div>
           
-          <div *ngIf="courses.length === 0" class="empty-message">
-            <p>Nenhum curso encontrado</p>
+          <!-- Error -->
+          <div *ngIf="error" class="error-message">
+            <p>{{ error }}</p>
+            <button class="retry-button" (click)="loadCourses()">Tentar Novamente</button>
           </div>
-        </div>
-      </div>
-
-      <!-- 3. Lista de usuários -->
-      <div class="dashboard-card">
-        <h2>Estagiários Cadastrados</h2>
-        
-        <!-- Loading -->
-        <div *ngIf="loadingUsers" class="loading">
-          <div class="spinner"></div>
-          <p>Carregando usuários...</p>
-        </div>
-        
-        <!-- Error -->
-        <div *ngIf="userError" class="error-message">
-          <p>{{ userError }}</p>
-          <button class="retry-button" (click)="loadUsers()">Tentar Novamente</button>
-        </div>
-        
-        <!-- Users List -->
-        <div *ngIf="!loadingUsers && !userError" class="users-list">
-          <div *ngFor="let user of users; let i = index" 
-               class="user-item" 
-               [class.selected]="selectedUserIndex === i"
-               (click)="selectUser(i)">
-            <div class="user-info">
-              <span class="user-email">{{ user.email }}</span>
-              <span class="user-role">{{ user.role || 'Usuário' }}</span>
+          
+          <!-- Courses List -->
+          <div *ngIf="!loading && !error" class="courses-list">
+            <div *ngFor="let course of courses" class="course-item">
+              <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+              </div>
+              <button class="delete-button" (click)="deleteCourse(course.id)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div *ngIf="courses.length === 0" class="empty-message">
+              <p>Nenhum curso encontrado</p>
             </div>
           </div>
+        </div>
+
+        <!-- 3. Lista de usuários -->
+        <div class="dashboard-card">
+          <h2>Estagiários Cadastrados</h2>
           
-          <div *ngIf="users.length === 0" class="empty-message">
-            <p>Nenhum usuário encontrado</p>
+          <!-- Loading -->
+          <div *ngIf="loadingUsers" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando usuários...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="userError" class="error-message">
+            <p>{{ userError }}</p>
+            <button class="retry-button" (click)="loadUsers()">Tentar Novamente</button>
+          </div>
+          
+          <!-- Users List -->
+          <div *ngIf="!loadingUsers && !userError" class="users-list">
+            <div *ngFor="let user of users; let i = index" 
+                 class="user-item" 
+                 [class.selected]="selectedUserIndex === i"
+                 (click)="selectUser(i)">
+              <div class="user-info">
+                <span class="user-email">{{ user.email }}</span>
+                <span class="user-role">{{ user.role || 'Usuário' }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="users.length === 0" class="empty-message">
+              <p>Nenhum usuário encontrado</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-          <h2>Cursos Concluídos por Estagiário</h2>
-            <p *ngIf="selectedUserIndex === null">Selecione um estagiário para ver os cursos concluídos.</p>
-            <div *ngIf="selectedUserIndex!== null" class="completed-courses">
-            <h3>Estagiário: {{ this.users[selectedUserIndex].email }}</h3>
-            <ul *ngIf="completedCourses.length > 0">
-              <li *ngFor="let course of completedCourses">{{ course.title }}</li>
-            </ul>
-            <p *ngIf="completedCourses.length === 0">Nenhum curso concluído encontrado.</p>
+      <div class="dashboard-grid">
+        <div class="dashboard-card">
+            <h2>Cursos Concluídos por Estagiário</h2>
+              <p *ngIf="selectedUserIndex === null">Selecione um estagiário para ver os cursos concluídos.</p>
+              <div *ngIf="selectedUserIndex!== null" class="completed-courses">
+              <h3>Estagiário: {{ this.users[selectedUserIndex].email }}</h3>
+              <ul *ngIf="completedCourses.length > 0">
+                <li *ngFor="let course of completedCourses">{{ course.title }}</li>
+              </ul>
+              <p *ngIf="completedCourses.length === 0">Nenhum curso concluído encontrado.</p>
+        </div>
       </div>
     </div>
+    </div>
+
+    <!-- Track Tab Content -->
+    <div *ngIf="activeTab === 'track'" class="tab-content">
+      <div class="dashboard-grid">
+        <!-- 1. Formulário para criar programa de estágio -->
+        <div class="dashboard-card">
+          <h2>Criar Programa de Estágio</h2>
+          <form (ngSubmit)="createInternshipProgram()" class="internship-form">
+            <div class="form-group">
+              <label for="programTitle">Título do Programa</label>
+              <input 
+                type="text" 
+                id="programTitle" 
+                [(ngModel)]="newInternshipProgram.title" 
+                name="programTitle"
+                placeholder="Digite o título do programa"
+                required>
+            </div>
+            
+            <div class="form-group">
+              <label for="programDescription">Descrição</label>
+              <textarea 
+                id="programDescription" 
+                [(ngModel)]="newInternshipProgram.description" 
+                name="programDescription"
+                placeholder="Digite a descrição do programa"
+                rows="4"
+                required></textarea>
+            </div>
+            
+            <div class="form-group">
+              <label for="startDate">Data de Início</label>
+              <input 
+                type="date" 
+                id="startDate" 
+                [(ngModel)]="newInternshipProgram.startDate" 
+                name="startDate"
+                required>
+            </div>
+            
+            <div class="form-group">
+              <label for="endDate">Data de Fim</label>
+              <input 
+                type="date" 
+                id="endDate" 
+                [(ngModel)]="newInternshipProgram.endDate" 
+                name="endDate"
+                required>
+            </div>
+            
+            <button type="submit" class="create-button" 
+                    [disabled]="!newInternshipProgram.title || !newInternshipProgram.description || !newInternshipProgram.startDate || !newInternshipProgram.endDate">
+              Criar Programa
+            </button>
+          </form>
+        </div>
+
+        <!-- 2. Lista de cursos para incluir no programa -->
+        <div class="dashboard-card">
+          <h2>Cursos do Programa</h2>
+          <p class="section-description">Selecione os cursos que farão parte do programa de estágio</p>
+          
+          <!-- Loading -->
+          <div *ngIf="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando cursos...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="error" class="error-message">
+            <p>{{ error }}</p>
+            <button class="retry-button" (click)="loadCourses()">Tentar Novamente</button>
+          </div>
+          
+          <!-- Courses Selection List -->
+          <div *ngIf="!loading && !error" class="program-courses-list">
+            <div *ngFor="let course of courses; let i = index" class="program-course-item">
+              <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+              </div>
+              <div class="course-selection">
+                <label class="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    [checked]="selectedCourses.includes(course.id)"
+                    (change)="toggleCourseSelection(course.id)">
+                  <span class="checkmark"></span>
+                  <span class="checkbox-label">Incluir no programa</span>
+                </label>
+              </div>
+            </div>
+            
+            <div *ngIf="courses.length === 0" class="empty-message">
+              <p>Nenhum curso disponível</p>
+            </div>
+            
+            <div *ngIf="selectedCourses.length > 0" class="selected-summary">
+              <p><strong>{{ selectedCourses.length }}</strong> curso(s) selecionado(s) para o programa</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Bloco em branco -->
+        <div class="dashboard-card">
+          <h2>Funcionalidade 2</h2>
+          <p class="empty-message">Em desenvolvimento...</p>
+        </div>
+      </div>
+    </div>
+    
+    <button class="back-button" (click)="logout()">Logout</button>
   </div>
-  
-  <button class="back-button" (click)="logout()">Logout</button>
 </div>

@@ -1,6 +1,7 @@
 package br.com.opusinternportal.api.exception;
 
 import br.com.opusinternportal.api.dto.GenericMessage;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -35,5 +36,12 @@ public class ErrorHandler {
         return ResponseEntity
                 .badRequest()
                 .body(new GenericMessage("Missing parameter: " + ex.getParameterName()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<GenericMessage> handleUniqueConstraintViolation(DataIntegrityViolationException ex) {
+        return ResponseEntity
+                .badRequest()
+                .body(new GenericMessage("Violação de restrição de unicidade: já existe um registro com este valor."));
     }
 }

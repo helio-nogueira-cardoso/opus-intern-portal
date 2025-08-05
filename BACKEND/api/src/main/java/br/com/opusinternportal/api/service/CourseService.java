@@ -28,6 +28,11 @@ public class CourseService {
         return courseRepository.findAll();
     }
 
+    public Course getCourseById(UUID courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new IllegalArgumentException("Course not found with id: " + courseId));
+    }
+
     public void addCourse(Course course) {
         if (course.getId() != null && courseRepository.existsById(course.getId())) {
             throw new IllegalArgumentException("Course with this ID already exists.");
