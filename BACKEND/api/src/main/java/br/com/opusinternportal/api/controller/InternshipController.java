@@ -46,7 +46,7 @@ public class InternshipController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{internshipId}/course/{courseId}/remove")
+    @DeleteMapping("/{internshipId}/course/{courseId}")
     public ResponseEntity<Void> removeCourseFromInternship(@PathVariable UUID internshipId, @PathVariable UUID courseId) {
         internshipService.removeCourseFromInternship(internshipId, courseId);
         return ResponseEntity.ok().build();

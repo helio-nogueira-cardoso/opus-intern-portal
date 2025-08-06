@@ -24,6 +24,11 @@ export class MentorDashboardComponent implements OnInit {
   completedCourses: Course[] = [];
   
   selectedUserIndex: number | null = null;
+  selectedProgramIndex: number | null = null;
+  programCourses: Course[] = [];
+  loadingProgramCourses = false;
+  programCoursesError = '';
+  
   users: User[] = [];
   loading = false;
   loadingUsers = false;
@@ -72,6 +77,15 @@ export class MentorDashboardComponent implements OnInit {
   selectUser(userIndex: number) {
     this.selectedUserIndex = userIndex;
     this.loadCompletedCourses(this.users[userIndex].id);
+  }
+
+  /**
+   * Seleciona um programa de estágio para ver os cursos associados
+   * @param programIndex Índice do programa selecionado
+   */
+  selectProgram(programIndex: number) {
+    this.selectedProgramIndex = programIndex;
+    this.loadProgramCourses(this.internshipPrograms[programIndex].id);
   }
 
   /**
@@ -258,6 +272,8 @@ export class MentorDashboardComponent implements OnInit {
       this.loadingPrograms = false;
       
       this.loadInternshipPrograms();
+      
+      this.selectedProgramIndex = null; 
     })
     .catch(error => {
       console.error('Erro ao excluir programa:', error);
@@ -387,5 +403,100 @@ export class MentorDashboardComponent implements OnInit {
     .catch(error => {
       console.error('Erro:', error);
     });
+  }
+
+  /**
+   * Carrega os cursos de um programa de estágio específico
+   * @param programId ID do programa de estágio
+   */
+  loadProgramCourses(programId: string) {
+    this.loadingProgramCourses = true;
+    this.programCoursesError = '';
+    this.programCourses = [];
+
+    fetch(`http://localhost:8080/api/internship/${programId}/courses`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar cursos do programa');
+        }
+        return response.json();
+      })
+      .then((courses: Course[]) => {
+        console.log('Cursos do programa carregados:', courses);
+        this.programCourses = courses;
+        this.loadingProgramCourses = false;
+      })
+      .catch(error => {
+        console.error('Erro ao carregar cursos do programa:', error);
+        this.programCoursesError = 'Erro ao carregar cursos do programa. Tente novamente.';
+        this.loadingProgramCourses = false;
+      });
+  }
+
+  /**
+   * Remove um curso de um programa de estágio
+   * @param courseId ID do curso a ser removido
+   * @param programId ID do programa de estágio
+   */
+  removeCourseFromProgram(courseId: string, programId: string) {
+    if (!confirm('Tem certeza que deseja remover este curso do programa?')) {
+      return;
+    }
+
+    fetch(`http://localhost:8080/api/internship/${programId}/course/${courseId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro ao remover curso do programa');
+      }
+      
+      console.log('Curso removido do programa com sucesso');
+      
+      // Remove o curso da lista local
+      this.programCourses = this.programCourses.filter(course => course.id !== courseId);
+    })
+    .catch(error => {
+      console.error('Erro ao remover curso do programa:', error);
+      this.programCoursesError = 'Erro ao remover curso do programa. Tente novamente.';
+      
+      // Remove a mensagem de erro após 3 segundos
+      setTimeout(() => {
+        this.programCoursesError = '';
+      }, 3000);
+    });
+  }
+
+  addSelectedCoursesToProgram(programId: string): void {
+    if (this.selectedCourses.length === 0) {
+      alert('Por favor, selecione pelo menos um curso para adicionar ao programa.');
+      return;
+    }
+
+   
+    for (const courseId of this.selectedCourses) {
+      fetch(`http://localhost:8080/api/internship/${programId}/course/${courseId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao associar curso ao programa');
+        }
+        console.log(`Curso ${courseId} associado ao programa ${programId} com sucesso`);
+        this.loadProgramCourses(programId); // Recarrega os cursos do programa após a associação
+        this.selectedCourses = []; // Limpa a seleção de cursos após a adição
+      })
+      .catch(error => {
+        console.error(`Erro ao associar curso ${courseId} ao programa ${programId}:`, error);
+      });
+    }
+
+    
   }
 }

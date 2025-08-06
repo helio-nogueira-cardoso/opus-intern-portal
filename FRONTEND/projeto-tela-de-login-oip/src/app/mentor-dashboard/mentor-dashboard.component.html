@@ -267,7 +267,10 @@
           
           <!-- Programs List -->
           <div *ngIf="!loadingPrograms && !programError" class="programs-list">
-            <div *ngFor="let program of internshipPrograms; let i = index" class="program-item">
+            <div *ngFor="let program of internshipPrograms; let i = index" 
+                 class="program-item"
+                 [class.selected]="selectedProgramIndex === i"
+                 (click)="selectProgram(i)">
               <div class="program-info">
                 <h3>{{ program.title }}</h3>
                 <p>{{ program.description }}</p>
@@ -280,7 +283,7 @@
                   </span>
                 </div>
               </div>
-              <button class="delete-button" (click)="deleteInternshipProgram(program.id, i)">
+              <button class="delete-button" (click)="deleteInternshipProgram(program.id, i); $event.stopPropagation()">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
@@ -293,6 +296,49 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <!-- Card de cursos do programa selecionado -->
+      <div *ngIf="selectedProgramIndex !== null" class="dashboard-grid">
+        <div class="dashboard-card">
+          <h2>Cursos do Programa: {{ internshipPrograms[selectedProgramIndex].title }}</h2>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingProgramCourses" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando cursos do programa...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="programCoursesError" class="error-message">
+            <p>{{ programCoursesError }}</p>
+            <button class="retry-button" (click)="loadProgramCourses(internshipPrograms[selectedProgramIndex].id)">Tentar Novamente</button>
+          </div>
+          
+          <!-- Program Courses List -->
+          <div *ngIf="!loadingProgramCourses && !programCoursesError" class="courses-list">
+            <div *ngFor="let course of programCourses" class="course-item">
+              <div class="course-info">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+              </div>
+              <button class="delete-button" (click)="removeCourseFromProgram(course.id, internshipPrograms[selectedProgramIndex].id)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div *ngIf="programCourses.length === 0" class="empty-message">
+              <p>Nenhum curso associado a este programa</p>
+            </div>
+          </div>
+          <button class="create-button" (click)="addSelectedCoursesToProgram(internshipPrograms[selectedProgramIndex].id)" 
+                  [disabled]="selectedCourses.length === 0">
+            Adicionar Cursos Selecionados ao Programa
+          </button>
+        </div>
+
       </div>
     </div>
     
