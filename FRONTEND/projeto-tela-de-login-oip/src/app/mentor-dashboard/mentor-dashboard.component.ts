@@ -5,6 +5,15 @@ import { UserService, User } from '../services/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '../services/auth.service';
 
+interface InternshipProgram {
+  id: string;  
+  title: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  mentorId: string;
+}
+
 @Component({
   selector: 'app-mentor-dashboard',
   templateUrl: './mentor-dashboard.component.html',
@@ -13,13 +22,17 @@ import { AuthService } from '../services/auth.service';
 export class MentorDashboardComponent implements OnInit {
   courses: Course[] = [];
   completedCourses: Course[] = [];
-
+  
   selectedUserIndex: number | null = null;
   users: User[] = [];
   loading = false;
   loadingUsers = false;
   error = '';
   userError = '';
+
+  internshipPrograms: InternshipProgram[] = [];
+  loadingPrograms = false;
+  programError = '';
 
   newCourse: CreateCourseRequest = {
     title: '',
@@ -49,6 +62,7 @@ export class MentorDashboardComponent implements OnInit {
   ngOnInit() {
     this.loadCourses();
     this.loadUsers();
+    this.loadInternshipPrograms(); 
   }
 
   /**
@@ -125,6 +139,37 @@ export class MentorDashboardComponent implements OnInit {
       });
   }
 
+  loadInternshipPrograms(): void {
+    const mentorId = localStorage.getItem('uuid');
+    
+    if (!mentorId) {
+      console.error('ID do mentor não encontrado no localStorage');
+      this.programError = 'ID do mentor não encontrado';
+      return;
+    }
+
+    this.loadingPrograms = true;
+    this.programError = '';
+
+    fetch(`http://localhost:8080/api/internship/mentor/${mentorId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar programas de estágio');
+        }
+        return response.json();
+      })
+      .then((programs: InternshipProgram[]) => {
+        console.log('Programas de estágio carregados:', programs);
+        this.internshipPrograms = programs;
+        this.loadingPrograms = false;
+      })
+      .catch(error => {
+        console.error('Erro ao carregar programas:', error);
+        this.programError = 'Erro ao carregar programas de estágio. Tente novamente.';
+        this.loadingPrograms = false;
+      });
+  }
+
   /**
    * Cria um novo curso
    */
@@ -183,15 +228,53 @@ export class MentorDashboardComponent implements OnInit {
       });
   }
 
+  /**
+   * Exclui um programa de estágio
+   */
+  deleteInternshipProgram(programId: string, index: number): void {
+    if (!confirm('Tem certeza que deseja excluir este programa de estágio?')) {
+      return;
+    }
+
+    // Atualiza o estado de loading para este programa específico
+    this.loadingPrograms = true;
+
+    fetch(`http://localhost:8080/api/internship/${programId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro ao excluir programa de estágio');
+      }
+      
+      console.log('Programa de estágio excluído com sucesso');
+      
+      // Remove o programa da lista local
+      this.internshipPrograms.splice(index, 1);
+      
+      this.loadingPrograms = false;
+      
+      this.loadInternshipPrograms();
+    })
+    .catch(error => {
+      console.error('Erro ao excluir programa:', error);
+      this.programError = 'Erro ao excluir programa de estágio. Tente novamente.';
+      this.loadingPrograms = false;
+      
+      // Remove a mensagem de erro após 3 segundos
+      setTimeout(() => {
+        this.programError = '';
+      }, 3000);
+    });
+  }
+
   // Logout do usuário
   logout() {
     this.authService.logout(); 
     this.router.navigate(['/login']);
-  }
-
-  // Adicione este método
-  setActiveTab(tab: string): void {
-    this.activeTab = tab;
   }
 
   // Adicione este método
@@ -203,6 +286,29 @@ export class MentorDashboardComponent implements OnInit {
     } else {
       // Remove o curso se já estiver selecionado
       this.selectedCourses.splice(index, 1);
+    }
+    console.log('Cursos selecionados:', this.selectedCourses);
+  }
+
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
+    
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+  
+  /**
+   * Define a aba ativa
+   * @param tab Nome da aba a ser ativada
+   */
+  setActiveTab(tab: string): void {
+    this.activeTab = tab;
+    if (tab === 'track') {
+      this.loadInternshipPrograms();
     }
   }
 
@@ -249,22 +355,29 @@ export class MentorDashboardComponent implements OnInit {
         endDate: ''
       };
 
-      // Associar os cursos ao novo programa
-      for (const courseId of this.selectedCourses) {
-        fetch(`http://localhost:8080/api/internship/${newInternshipId}/course/${courseId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        .then(courseResponse => {
-          if (!courseResponse.ok) {
-            throw new Error('Erro ao associar curso ao programa de estágio');
-          }
-        })
-        .catch(error => {
-          console.error('Erro ao associar curso:', error);
-        });
+      // Associar os cursos selecionados ao novo programa (se houver)
+      if (this.selectedCourses.length > 0) {
+        const associationPromises = this.selectedCourses.map(courseId => 
+          fetch(`http://localhost:8080/api/internship/${newInternshipId}/course/${courseId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+        );
+
+        Promise.all(associationPromises)
+          .then(() => {
+            console.log('Todos os cursos foram associados com sucesso');
+            // Recarregar a lista de programas
+            this.loadInternshipPrograms();
+          })
+          .catch(error => {
+            console.error('Erro ao associar alguns cursos:', error);
+          });
+      } else {
+        // Se não há cursos selecionados, apenas recarrega a lista de programas
+        this.loadInternshipPrograms();
       }
 
       // Resetar cursos selecionados

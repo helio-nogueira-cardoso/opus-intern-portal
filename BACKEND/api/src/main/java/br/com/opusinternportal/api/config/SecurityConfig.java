@@ -37,9 +37,11 @@ public class SecurityConfig {
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                    .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
                     .requestMatchers(HttpMethod.POST, "/api/**").permitAll()
-                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Allow preflight
-                    .requestMatchers(HttpMethod.GET, "/api/**").permitAll() // Allow GET for testing
+                    .requestMatchers(HttpMethod.DELETE, "/api/**").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/api/**").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                     .requestMatchers(
                             "/v3/api-docs/**",
                             "/swagger-ui.html",

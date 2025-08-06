@@ -27,8 +27,17 @@ public class InternshipController {
     }
 
     @GetMapping
-    public List<Internship> listAll() {
-        return internshipService.listAllInternships();
+    public List<InternshipDTO> listAll() {
+        return internshipService.listAllInternships()
+                .stream()
+                .map(InternshipDTO::fromEntity)
+                .toList();
+    }
+
+    @DeleteMapping("/{internshipId}")
+    public ResponseEntity<Void> deleteInternship(@PathVariable UUID internshipId) {
+        internshipService.deleteInternship(internshipId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{internshipId}/course/{courseId}")
@@ -46,5 +55,13 @@ public class InternshipController {
     @GetMapping("/{internshipId}/courses")
     public List<Course> getCoursesByInternship(@PathVariable UUID internshipId) {
         return internshipService.getCoursesByInternshipId(internshipId);
+    }
+
+    @GetMapping("/mentor/{mentorId}")
+    public List<InternshipDTO> getInternshipsByMentor(@PathVariable UUID mentorId) {
+        return internshipService.getInternshipsByMentorId(mentorId)
+                .stream()
+                .map(InternshipDTO::fromEntity)
+                .toList();
     }
 }

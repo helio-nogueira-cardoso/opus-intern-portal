@@ -88,4 +88,13 @@ public class InternshipService {
         Internship internship = getInternshipById(internshipId);
         return List.copyOf(internship.getCourses());
     }
+
+    public List<Internship> getInternshipsByMentorId(UUID mentorId) {
+        PortalUser mentor = portalUserRepository.findById(mentorId)
+                .orElseThrow(() -> new IllegalArgumentException("Mentor not found with id: " + mentorId));
+        if (mentor.getRole() != Role.MENTOR) {
+            throw new IllegalArgumentException("User is not a mentor!");
+        }
+        return internshipRepository.findByMentor(mentor);
+    }
 }

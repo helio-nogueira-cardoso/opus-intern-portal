@@ -19,7 +19,7 @@
             class="nav-button" 
             [class.active]="activeTab === 'track'"
             (click)="setActiveTab('track')">
-            Track
+            Programas De Estágio
           </button>
         </li>
       </ul>
@@ -248,10 +248,50 @@
           </div>
         </div>
 
-        <!-- 3. Bloco em branco -->
+        <!-- 3. Lista de programas de estágio -->
         <div class="dashboard-card">
-          <h2>Funcionalidade 2</h2>
-          <p class="empty-message">Em desenvolvimento...</p>
+          <h2>Meus Programas de Estágio</h2>
+          <p class="section-description">Programas de estágio criados por você</p>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingPrograms" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando programas...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="programError" class="error-message">
+            <p>{{ programError }}</p>
+            <button class="retry-button" (click)="loadInternshipPrograms()">Tentar Novamente</button>
+          </div>
+          
+          <!-- Programs List -->
+          <div *ngIf="!loadingPrograms && !programError" class="programs-list">
+            <div *ngFor="let program of internshipPrograms; let i = index" class="program-item">
+              <div class="program-info">
+                <h3>{{ program.title }}</h3>
+                <p>{{ program.description }}</p>
+                <div class="program-dates">
+                  <span class="date-info">
+                    <strong>Início:</strong> {{ formatDate(program.startDate) }}
+                  </span>
+                  <span class="date-info">
+                    <strong>Fim:</strong> {{ formatDate(program.endDate) }}
+                  </span>
+                </div>
+              </div>
+              <button class="delete-button" (click)="deleteInternshipProgram(program.id, i)">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3 6H5H21M8 6V4C8 3.44772 8.44772 3 9 3H15C15.5523 3 16 3.44772 16 4V6M19 6V20C19 20.5523 18.4477 21 18 21H6C5.44772 21 5 20.5523 5 20V6H19ZM10 11V17M14 11V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </button>
+            </div>
+            
+            <div *ngIf="internshipPrograms.length === 0" class="empty-message">
+              <p>Nenhum programa de estágio encontrado</p>
+              <p class="empty-hint">Crie seu primeiro programa usando o formulário ao lado</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
