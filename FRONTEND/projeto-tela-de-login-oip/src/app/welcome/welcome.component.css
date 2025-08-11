@@ -3,22 +3,22 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f3ef 0%, #e9e4d8 100%);
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
   position: relative;
 }
 
 .welcome-content {
-  background: #fff;
+  background: #1a1a1a;
   padding: 4rem 3rem;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(176, 42, 55, 0.07), 0 1.5px 6px rgba(0,0,0,0.03);
+  box-shadow: 0 8px 32px rgba(255, 143, 0, 0.15), 0 1.5px 6px rgba(250, 0, 30, 0.1);
   text-align: center;
   max-width: 500px;
   width: 100%;
   animation: fadeInUp 0.8s ease-out;
-  border: 1.5px solid #e9e4d8;
+  border: 1.5px solid #333333;
   position: relative;
   z-index: 1;
 }
@@ -35,16 +35,16 @@
 }
 
 .welcome-content h1 {
-  color: #b02a37;
+  color: #DCDCDC;
   font-size: 3rem;
   font-weight: 400;
   margin-bottom: 1rem;
   letter-spacing: 1px;
-  text-shadow: 0 2px 6px rgba(176, 42, 55, 0.08);
+  text-shadow: 0 2px 6px rgba(220, 220, 220, 0.2);
 }
 
 .welcome-message {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-size: 1.25rem;
   margin-bottom: 2rem;
   font-weight: 400;
@@ -52,7 +52,7 @@
 
 .success-icon {
   margin: 2rem 0;
-  color: #b02a37;
+  color: #FF8F00;
   animation: checkmark 0.6s ease-in-out 0.3s both;
 }
 
@@ -72,8 +72,8 @@
 }
 
 .back-button {
-  background: linear-gradient(135deg, #b02a37 0%, #e94f4a 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #FA001E 0%, #FF8F00 100%);
+  color: #000000;
   padding: 1rem 2rem;
   border: none;
   border-radius: 10px;
@@ -84,13 +84,13 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 1rem;
-  box-shadow: 0 4px 16px rgba(176, 42, 55, 0.10);
+  box-shadow: 0 4px 16px rgba(250, 0, 30, 0.3);
 }
 
 .back-button:hover {
-  background: linear-gradient(135deg, #a1272f 0%, #c43d3a 100%);
+  background: linear-gradient(135deg, #d9001a 0%, #e6800a 100%);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(176, 42, 55, 0.18);
+  box-shadow: 0 8px 24px rgba(255, 143, 0, 0.4);
 }
 
 .back-button:active {
@@ -104,7 +104,7 @@
 }
 
 .courses-section h2 {
-  color: #b02a37;
+  color: #FF8F00;
   font-size: 1.8rem;
   font-weight: 500;
   margin-bottom: 1.5rem;
@@ -119,8 +119,8 @@
 }
 
 .course-card {
-  background: #fafafa;
-  border: 1px solid #e9e4d8;
+  background: #262626;
+  border: 1px solid #333333;
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.3s ease;
@@ -136,7 +136,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(176, 42, 55, 0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 143, 0, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -145,22 +145,22 @@
 }
 
 .course-card:hover {
-  background: #f5f5f5;
-  border-color: #b02a37;
+  background: #333333;
+  border-color: #FF8F00;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.1);
+  box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
 }
 
 .course-card.completed {
-  background: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
-  border-color: #28a745;
+  background: linear-gradient(135deg, #001a00 0%, #003300 100%);
+  border-color: #00ff00;
   transform: scale(1.02);
 }
 
 .course-card.completed:hover {
-  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-  border-color: #17a2b8;
-  box-shadow: 0 6px 16px rgba(40, 167, 69, 0.15);
+  background: linear-gradient(135deg, #003300 0%, #004d00 100%);
+  border-color: #00ff00;
+  box-shadow: 0 6px 16px rgba(0, 255, 0, 0.15);
 }
 
 .course-status {
@@ -169,22 +169,22 @@
   justify-content: space-between;
   margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e9e4d8;
+  border-bottom: 1px solid #333333;
 }
 
 .course-card.completed .course-status {
-  border-bottom-color: #28a745;
+  border-bottom-color: #00ff00;
 }
 
 .status-icon {
   display: flex;
   align-items: center;
-  color: #6c757d;
+  color: #808080;
   transition: all 0.3s ease;
 }
 
 .course-card.completed .status-icon {
-  color: #28a745;
+  color: #00ff00;
   animation: checkBounce 0.6s ease-out;
 }
 
@@ -208,16 +208,16 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  color: #6c757d;
+  color: #808080;
   transition: all 0.3s ease;
 }
 
 .course-card.completed .status-text {
-  color: #28a745;
+  color: #00ff00;
 }
 
 .course-card h3 {
-  color: #b02a37;
+  color: #DCDCDC;
   font-size: 1.2rem;
   font-weight: 600;
   margin-bottom: 0.8rem;
@@ -226,14 +226,14 @@
 }
 
 .course-card.completed h3 {
-  color: #28a745;
+  color: #00ff00;
   text-decoration: line-through;
-  text-decoration-color: #28a745;
+  text-decoration-color: #00ff00;
   text-decoration-thickness: 2px;
 }
 
 .course-card p {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-size: 0.95rem;
   line-height: 1.5;
   margin: 0;
@@ -241,7 +241,7 @@
 }
 
 .course-card.completed p {
-  color: #5a5a5a;
+  color: #808080;
   opacity: 0.8;
 }
 
@@ -249,14 +249,14 @@
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #3a2c23;
+  color: #DCDCDC;
 }
 
 .spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid #e9e4d8;
-  border-top: 3px solid #b02a37;
+  border: 3px solid #333333;
+  border-top: 3px solid #FF8F00;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -271,13 +271,13 @@
 .error-message {
   text-align: center;
   padding: 2rem;
-  color: #b02a37;
+  color: #FA001E;
 }
 
 .retry-button {
   background: transparent;
-  color: #b02a37;
-  border: 2px solid #b02a37;
+  color: #FA001E;
+  border: 2px solid #FA001E;
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   font-size: 0.95rem;
@@ -288,8 +288,8 @@
 }
 
 .retry-button:hover {
-  background: #b02a37;
-  color: #fff;
+  background: #FA001E;
+  color: #000000;
 }
 
 /* Mobile responsiveness */

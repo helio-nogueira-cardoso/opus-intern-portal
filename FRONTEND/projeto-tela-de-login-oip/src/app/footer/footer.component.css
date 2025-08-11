@@ -1,0 +1,137 @@
+.footer {
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  color: #ecf0f1;
+  margin-top: auto;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.footer-logo {
+  width: 180px;
+  height: auto;
+}
+
+.slogan {
+  color: #bdc3c7;
+  font-size: 18px;
+  margin: 0;
+  line-height: 1.4;
+  font-weight: 300;
+  max-width: 300px;
+}
+
+.slogan em {
+  color: #ffac00;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.social-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #bdc3c7;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.social-link:hover {
+  background: linear-gradient(135deg, #ffac00, #f90020);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(249, 0, 32, 0.3);
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.footer-bottom {
+  border-top: 1px solid #34495e;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: center;
+  padding: 20px;
+}
+
+.copyright {
+  margin: 0;
+  color: #95a5a6;
+  font-size: 13px;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 30px;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .footer-brand {
+    align-items: center;
+  }
+  
+  .footer-logo {
+    width: 100px;
+  }
+  
+  .slogan {
+    font-size: 16px;
+    text-align: center;
+  }
+  
+  .social-links {
+    gap: 15px;
+  }
+  
+  .social-link {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .social-link svg {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-logo {
+    width: 80px;
+  }
+  
+  .slogan {
+    font-size: 14px;
+  }
+}

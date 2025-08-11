@@ -1,13 +1,11 @@
 package br.com.opusinternportal.api.service;
 
 import br.com.opusinternportal.api.dto.InternshipDTO;
-import br.com.opusinternportal.api.entity.Course;
-import br.com.opusinternportal.api.entity.Internship;
-import br.com.opusinternportal.api.entity.PortalUser;
-import br.com.opusinternportal.api.entity.Role;
+import br.com.opusinternportal.api.entity.*;
 import br.com.opusinternportal.api.repository.CourseRepository;
 import br.com.opusinternportal.api.repository.InternshipRepository;
 import br.com.opusinternportal.api.repository.PortalUserRepository;
+import br.com.opusinternportal.api.repository.UserInternshipRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +22,9 @@ public class InternshipService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private UserInternshipRepository userInternshipRepository;
 
     public List<Internship> listAllInternships() {
         return internshipRepository.findAll();
@@ -96,5 +97,45 @@ public class InternshipService {
             throw new IllegalArgumentException("User is not a mentor!");
         }
         return internshipRepository.findByMentor(mentor);
+    }
+
+    public List<InternshipDTO> getInternshipsByInternId(UUID internId) {
+        PortalUser intern = portalUserRepository.findById(internId)
+                .orElseThrow(() -> new IllegalArgumentException("Intern not found with id: " + internId));
+        if (intern.getRole() != Role.INTERN) {
+            throw new IllegalArgumentException("User is not an intern!");
+        }
+        List<UserInternship> userInternships = userInternshipRepository.findByUserId(intern.getId());
+        return userInternships.stream()
+                .map(UserInternship::getInternship)
+                .map(InternshipDTO::fromEntity)
+                .toList();
+    }
+
+    public void addInternshipToUser(UUID userId, UUID internshipId) {
+        PortalUser user = portalUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+        Internship internship = getInternshipById(internshipId);
+
+        if (user.getRole() != Role.INTERN) {
+            throw new IllegalArgumentException("User is not an intern!");
+        }
+
+        UserInternship userInternship = new UserInternship();
+        userInternship.setUser(user);
+        userInternship.setInternship(internship);
+
+        userInternshipRepository.save(userInternship);
+    }
+
+    public void removeInternshipFromUser(UUID userId, UUID internshipId) {
+        PortalUser user = portalUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
+
+        if (user.getRole() != Role.INTERN) {
+            throw new IllegalArgumentException("User is not an intern!");
+        }
+
+        userInternshipRepository.deleteByUserIdAndInternshipId(user.getId(), internshipId);
     }
 }

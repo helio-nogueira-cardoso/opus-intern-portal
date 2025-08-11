@@ -3,22 +3,22 @@
   align-items: flex-start;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #f5f3ef 0%, #e9e4d8 100%);
+  background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   padding: 20px;
   position: relative;
 }
 
 .mentor-content {
-  background: #fff;
+  background: #1a1a1a;
   padding: 3rem 2rem;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(176, 42, 55, 0.07), 0 1.5px 6px rgba(0,0,0,0.03);
+  box-shadow: 0 8px 32px rgba(255, 143, 0, 0.15), 0 1.5px 6px rgba(250, 0, 30, 0.1);
   text-align: center;
   max-width: 1400px;
   width: 100%;
   animation: fadeInUp 0.8s ease-out;
-  border: 1.5px solid #e9e4d8;
+  border: 1.5px solid #333333;
   position: relative;
   z-index: 1;
 }
@@ -35,16 +35,16 @@
 }
 
 .mentor-content h1 {
-  color: #b02a37;
+  color: #DCDCDC;
   font-size: 2.5rem;
   font-weight: 400;
   margin-bottom: 1rem;
   letter-spacing: 1px;
-  text-shadow: 0 2px 6px rgba(176, 42, 55, 0.08);
+  text-shadow: 0 2px 6px rgba(220, 220, 220, 0.2);
 }
 
 .mentor-message {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-size: 1.1rem;
   margin-bottom: 3rem;
   font-weight: 400;
@@ -53,7 +53,7 @@
 /* Navigation Styles */
 .mentor-navbar {
   margin: 20px 0;
-  border-bottom: 2px solid #e0e0e0;
+  border-bottom: 2px solid #333333;
 }
 
 .nav-items {
@@ -74,20 +74,20 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 500;
-  color: #666;
+  color: #808080;
   border-bottom: 2px solid transparent;
   transition: all 0.3s ease;
 }
 
 .nav-button:hover {
-  color: #333;
-  background-color: #f5f5f5;
+  color: #DCDCDC;
+  background-color: #262626;
 }
 
 .nav-button.active {
-  color: #007bff;
-  border-bottom-color: #007bff;
-  background-color: #f8f9fa;
+  color: #FF8F00;
+  border-bottom-color: #FF8F00;
+  background-color: #262626;
 }
 
 .tab-content {
@@ -104,8 +104,8 @@
 }
 
 .dashboard-card {
-  background: #fafafa;
-  border: 1px solid #e9e4d8;
+  background: #262626;
+  border: 1px solid #333333;
   border-radius: 12px;
   padding: 2rem;
   transition: all 0.3s ease;
@@ -121,7 +121,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(176, 42, 55, 0.05), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 143, 0, 0.1), transparent);
   transition: left 0.5s ease;
 }
 
@@ -130,19 +130,19 @@
 }
 
 .dashboard-card:hover {
-  background: #f5f5f5;
-  border-color: #b02a37;
+  background: #333333;
+  border-color: #FF8F00;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.1);
+  box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
 }
 
 .dashboard-card h2 {
-  color: #b02a37;
+  color: #FF8F00;
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
   text-align: center;
-  border-bottom: 2px solid #e9e4d8;
+  border-bottom: 2px solid #333333;
   padding-bottom: 0.5rem;
 }
 
@@ -161,7 +161,7 @@
 }
 
 .form-group label {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-weight: 600;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -171,19 +171,20 @@
 .form-group input,
 .form-group textarea {
   padding: 1rem;
-  border: 2px solid #e9e4d8;
+  border: 2px solid #333333;
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
-  background: #fff;
+  background: #404040;
+  color: #DCDCDC;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #b02a37;
-  box-shadow: 0 0 0 3px rgba(176, 42, 55, 0.1);
+  border-color: #FF8F00;
+  box-shadow: 0 0 0 3px rgba(255, 143, 0, 0.2);
 }
 
 .form-group textarea {
@@ -192,8 +193,8 @@
 }
 
 .create-button {
-  background: linear-gradient(135deg, #b02a37 0%, #e94f4a 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #FA001E 0%, #FF8F00 100%);
+  color: #000000;
   padding: 1rem 2rem;
   border: none;
   border-radius: 8px;
@@ -204,20 +205,21 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-top: 1rem;
-  box-shadow: 0 4px 16px rgba(176, 42, 55, 0.10);
+  box-shadow: 0 4px 16px rgba(250, 0, 30, 0.3);
 }
 
 .create-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #a1272f 0%, #c43d3a 100%);
+  background: linear-gradient(135deg, #d9001a 0%, #e6800a 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(176, 42, 55, 0.15);
+  box-shadow: 0 6px 20px rgba(255, 143, 0, 0.4);
 }
 
 .create-button:disabled {
-  background: #ccc;
+  background: #404040;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
+  color: #808080;
 }
 
 /* Courses List */
@@ -231,16 +233,16 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 1rem;
-  border: 1px solid #e9e4d8;
+  border: 1px solid #333333;
   border-radius: 8px;
   margin-bottom: 1rem;
-  background: #fff;
+  background: #404040;
   transition: all 0.3s ease;
 }
 
 .course-item:hover {
-  background: #f9f9f9;
-  border-color: #b02a37;
+  background: #4d4d4d;
+  border-color: #FF8F00;
   transform: translateX(5px);
 }
 
@@ -249,22 +251,22 @@
 }
 
 .course-info h3 {
-  color: #b02a37;
+  color: #FF8F00;
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 0.5rem 0;
 }
 
 .course-info p {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-size: 0.9rem;
   line-height: 1.4;
   margin: 0;
 }
 
 .delete-button {
-  background: #dc3545;
-  color: #fff;
+  background: #FA001E;
+  color: #000000;
   border: none;
   border-radius: 6px;
   padding: 0.5rem;
@@ -276,7 +278,7 @@
 }
 
 .delete-button:hover {
-  background: #c82333;
+  background: #d9001a;
   transform: scale(1.1);
 }
 
@@ -288,29 +290,29 @@
 
 .user-item {
   padding: 1rem;
-  border: 1px solid #e9e4d8;
+  border: 1px solid #333333;
   border-radius: 8px;
   margin-bottom: 1rem;
-  background: #fff;
+  background: #404040;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .user-item:hover {
-  background: #f9f9f9;
-  border-color: #b02a37;
+  background: #4d4d4d;
+  border-color: #FF8F00;
   transform: translateX(5px);
 }
 
 .user-item.selected {
-  background: #f0f8ff;
-  border-color: #b02a37;
-  box-shadow: 0 2px 8px rgba(176, 42, 55, 0.15);
+  background: #1a2933;
+  border-color: #FF8F00;
+  box-shadow: 0 2px 8px rgba(255, 143, 0, 0.15);
   transform: translateX(3px);
 }
 
 .user-item.selected:hover {
-  background: #e6f3ff;
+  background: #203040;
 }
 
 .user-info {
@@ -320,17 +322,17 @@
 }
 
 .user-email {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-weight: 600;
   font-size: 1rem;
 }
 
 .user-role {
-  color: #6c757d;
+  color: #808080;
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  background: #e9ecef;
+  background: #333333;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
 }
@@ -339,14 +341,14 @@
 .loading {
   text-align: center;
   padding: 2rem;
-  color: #3a2c23;
+  color: #DCDCDC;
 }
 
 .spinner {
   width: 30px;
   height: 30px;
-  border: 3px solid #e9e4d8;
-  border-top: 3px solid #b02a37;
+  border: 3px solid #333333;
+  border-top: 3px solid #FF8F00;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -361,17 +363,17 @@
 .error-message {
   text-align: center;
   padding: 1rem;
-  color: #b02a37;
-  background: #fff5f5;
-  border: 1px solid #fed7d7;
+  color: #FA001E;
+  background: #1a0000;
+  border: 1px solid #FA001E;
   border-radius: 8px;
   margin-bottom: 1rem;
 }
 
 .retry-button {
   background: transparent;
-  color: #b02a37;
-  border: 2px solid #b02a37;
+  color: #FA001E;
+  border: 2px solid #FA001E;
   padding: 0.5rem 1rem;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -382,22 +384,22 @@
 }
 
 .retry-button:hover {
-  background: #b02a37;
-  color: #fff;
+  background: #FA001E;
+  color: #000000;
 }
 
 /* Empty Message */
 .empty-message {
   text-align: center;
   padding: 2rem;
-  color: #6c757d;
+  color: #808080;
   font-style: italic;
 }
 
 /* Back Button */
 .back-button {
-  background: linear-gradient(135deg, #b02a37 0%, #e94f4a 100%);
-  color: #fff;
+  background: linear-gradient(135deg, #FA001E 0%, #FF8F00 100%);
+  color: #000000;
   padding: 1rem 2rem;
   border: none;
   border-radius: 10px;
@@ -407,13 +409,13 @@
   transition: all 0.2s;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  box-shadow: 0 4px 16px rgba(176, 42, 55, 0.10);
+  box-shadow: 0 4px 16px rgba(250, 0, 30, 0.3);
 }
 
 .back-button:hover {
-  background: linear-gradient(135deg, #a1272f 0%, #c43d3a 100%);
+  background: linear-gradient(135deg, #d9001a 0%, #e6800a 100%);
   transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 8px 24px rgba(176, 42, 55, 0.18);
+  box-shadow: 0 8px 24px rgba(255, 143, 0, 0.4);
 }
 
 .back-button:active {
@@ -422,7 +424,7 @@
 
 /* Program Courses Styles */
 .section-description {
-  color: #666;
+  color: #808080;
   font-size: 14px;
   margin-bottom: 15px;
 }
@@ -437,16 +439,16 @@
   justify-content: space-between;
   align-items: flex-start;
   padding: 15px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #333333;
   border-radius: 8px;
   margin-bottom: 10px;
-  background-color: #fafafa;
+  background-color: #262626;
   transition: all 0.3s ease;
 }
 
 .program-course-item:hover {
-  background-color: #f0f0f0;
-  border-color: #ccc;
+  background-color: #333333;
+  border-color: #FF8F00;
 }
 
 .course-selection {
@@ -470,21 +472,21 @@
 
 .checkbox-label {
   font-size: 14px;
-  color: #333;
+  color: #DCDCDC;
 }
 
 .selected-summary {
   margin-top: 15px;
   padding: 10px;
-  background-color: #e7f3ff;
-  border: 1px solid #b3d9ff;
+  background-color: #1a3d4d;
+  border: 1px solid #FF8F00;
   border-radius: 5px;
   text-align: center;
 }
 
 .selected-summary p {
   margin: 0;
-  color: #0066cc;
+  color: #FF8F00;
 }
 
 /* Programs List Styles */
@@ -494,42 +496,42 @@
 }
 
 .program-item {
-  border: 1px solid #e0e0e0;
+  border: 1px solid #333333;
   border-radius: 8px;
   padding: 15px;
   margin-bottom: 15px;
-  background-color: #fff;
+  background-color: #404040;
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .program-item:hover {
-  background-color: #f9f9f9;
-  border-color: #b02a37;
+  background-color: #4d4d4d;
+  border-color: #FF8F00;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(176, 42, 55, 0.1);
+  box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
 }
 
 .program-item.selected {
-  background: #f0f8ff;
-  border-color: #b02a37;
-  box-shadow: 0 2px 8px rgba(176, 42, 55, 0.15);
+  background: #1a3d4d;
+  border-color: #FF8F00;
+  box-shadow: 0 2px 8px rgba(255, 143, 0, 0.15);
   transform: translateX(3px);
 }
 
 .program-item.selected:hover {
-  background: #e6f3ff;
+  background: #204055;
 }
 
 .program-info h3 {
-  color: #b02a37;
+  color: #FF8F00;
   font-size: 1.1rem;
   font-weight: 600;
   margin: 0 0 8px 0;
 }
 
 .program-info p {
-  color: #3a2c23;
+  color: #DCDCDC;
   font-size: 0.9rem;
   line-height: 1.4;
   margin: 0 0 12px 0;
@@ -543,8 +545,8 @@
 
 .date-info {
   font-size: 0.85rem;
-  color: #666;
-  background-color: #f5f5f5;
+  color: #808080;
+  background-color: #333333;
   padding: 4px 8px;
   border-radius: 4px;
 }
@@ -555,7 +557,7 @@
 }
 
 .program-courses-info strong {
-  color: #b02a37;
+  color: #FF8F00;
 }
 
 .courses-in-program {
@@ -565,8 +567,8 @@
 }
 
 .courses-in-program li {
-  background-color: #e7f3ff;
-  color: #0066cc;
+  background-color: #1a3d4d;
+  color: #FF8F00;
   padding: 4px 8px;
   margin: 4px 0;
   border-radius: 4px;
@@ -577,8 +579,82 @@
 
 .empty-hint {
   font-size: 0.85rem;
-  color: #999;
+  color: #666666;
   margin-top: 8px;
+}
+
+/* Completed Courses Styles */
+.completed-courses {
+  text-align: left;
+}
+
+.completed-courses h3 {
+  color: #FF8F00;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #333333;
+}
+
+.completed-courses p {
+  color: #DCDCDC;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0.5rem 0;
+}
+
+/* Estilo específico para a mensagem de seleção vazia */
+.dashboard-card > p {
+  color: #808080;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 1rem 0;
+  text-align: center;
+  font-style: italic;
+  padding: 2rem;
+  background: #333333;
+  border-radius: 8px;
+  border: 1px solid #404040;
+}
+
+.completed-courses ul {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0;
+}
+
+.completed-courses ul li {
+  color: #DCDCDC;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  padding: 0.5rem 0 0.5rem 1.5rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid #FF8F00;
+  background: #333333;
+  border-radius: 0 6px 6px 0;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.completed-courses ul li::before {
+  content: "✓";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  color: #FF8F00;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.completed-courses ul li:hover {
+  background: #404040;
+  border-left-color: #FA001E;
+  transform: translateX(3px);
+}
+
+.completed-courses ul li:hover::before {
+  color: #FA001E;
 }
 
 /* Mobile responsiveness */

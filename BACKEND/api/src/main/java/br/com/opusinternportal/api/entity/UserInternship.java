@@ -6,14 +6,14 @@ import lombok.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "user_courses")
+@Table(name = "user_internships")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-@IdClass(UserCourseId.class)
-public class UserCourse implements Serializable {
+@IdClass(UserInternshipId.class)
+public class UserInternship implements Serializable {
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -21,6 +21,6 @@ public class UserCourse implements Serializable {
 
     @Id
     @ManyToOne
-    @JoinColumn(name = "course_id", nullable = false)
-    private Course course;
+    @JoinColumn(name = "internship_id", nullable = false)
+    private Internship internship;
 }
