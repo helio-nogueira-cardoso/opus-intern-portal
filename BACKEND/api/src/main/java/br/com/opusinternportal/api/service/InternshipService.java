@@ -112,7 +112,7 @@ public class InternshipService {
                 .toList();
     }
 
-    public void addInternshipToUser(UUID userId, UUID internshipId) {
+    public void addInternshipToUser(UUID internshipId, UUID userId) {
         PortalUser user = portalUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
         Internship internship = getInternshipById(internshipId);
@@ -128,7 +128,7 @@ public class InternshipService {
         userInternshipRepository.save(userInternship);
     }
 
-    public void removeInternshipFromUser(UUID userId, UUID internshipId) {
+    public void removeInternshipFromUser(UUID internshipId, UUID userId) {
         PortalUser user = portalUserRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with id: " + userId));
 

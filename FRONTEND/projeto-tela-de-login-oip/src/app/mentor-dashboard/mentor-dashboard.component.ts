@@ -39,6 +39,20 @@ export class MentorDashboardComponent implements OnInit {
   loadingPrograms = false;
   programError = '';
 
+  // Programas do estagiário selecionado
+  internPrograms: InternshipProgram[] = [];
+  currentMentorPrograms: InternshipProgram[] = [];
+  otherMentorsPrograms: InternshipProgram[] = [];
+  loadingInternPrograms = false;
+  internProgramsError = '';
+
+  // Cursos de programa específico para estagiário
+  selectedInternProgramId: string | null = null;
+  selectedInternProgramCourses: Course[] = [];
+  completedCoursesByIntern: Set<string> = new Set();
+  loadingInternProgramCourses = false;
+  internProgramCoursesError = '';
+
   newCourse: CreateCourseRequest = {
     title: '',
     description: ''
@@ -77,6 +91,7 @@ export class MentorDashboardComponent implements OnInit {
   selectUser(userIndex: number) {
     this.selectedUserIndex = userIndex;
     this.loadCompletedCourses(this.users[userIndex].id);
+    this.loadInternPrograms(this.users[userIndex].id);
   }
 
   /**
@@ -326,6 +341,10 @@ export class MentorDashboardComponent implements OnInit {
     if (tab === 'track') {
       this.loadInternshipPrograms();
     }
+    if (tab === 'mentoria') {
+      this.loadInternshipPrograms();
+      this.loadUsers();
+    }
   }
 
   createInternshipProgram(): void {
@@ -496,7 +515,225 @@ export class MentorDashboardComponent implements OnInit {
         console.error(`Erro ao associar curso ${courseId} ao programa ${programId}:`, error);
       });
     }
+  }
 
+  /**
+   * Atribui um estagiário ao programa selecionado
+   */
+  assignInternToProgram(): void {
+    if (this.selectedProgramIndex === null || this.selectedUserIndex === null) {
+      alert('Por favor, selecione um programa e um estagiário.');
+      return;
+    }
+
+    const program = this.internshipPrograms[this.selectedProgramIndex];
+    const user = this.users[this.selectedUserIndex];
+
+    console.log(`Atribuindo estagiário ${user.id} ao programa ${program.id}`);
+
+    fetch(`http://localhost:8080/api/internship/${program.id}/intern/${user.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Erro ao atribuir estagiário ao programa');
+      }
+      console.log(`Estagiário ${user.email} atribuído ao programa ${program.title} com sucesso`);
+      alert(`Estagiário ${user.email} atribuído ao programa ${program.title} com sucesso!`);
+    })
+    .catch(error => {
+      console.error('Erro ao atribuir estagiário ao programa:', error);
+      alert('Erro ao atribuir estagiário ao programa. Tente novamente.');
+    });
+  }
+
+  /**
+   * Carrega os programas de estágio do estagiário
+   * @param userId ID do usuário/estagiário
+   */
+  loadInternPrograms(userId: string): void {
+    this.loadingInternPrograms = true;
+    this.internProgramsError = '';
+    this.internPrograms = [];
+    this.currentMentorPrograms = [];
+    this.otherMentorsPrograms = [];
+
+    // Obter o UUID do mentor atual do localStorage
+    const currentMentorId = localStorage.getItem('uuid');
+
+    // Simular API call - substituir pela chamada real da API
+    fetch(`http://localhost:8080/api/internship/intern/${userId}`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar programas do estagiário');
+        }
+        return response.json();
+      })
+      .then((programs: InternshipProgram[]) => {
+        console.log('Programas do estagiário carregados:', programs);
+        this.internPrograms = programs;
+        
+        // Separar programas do mentor atual dos demais
+        if (currentMentorId) {
+          this.currentMentorPrograms = programs.filter(program => program.mentorId === currentMentorId);
+          this.otherMentorsPrograms = programs.filter(program => program.mentorId !== currentMentorId);
+        } else {
+          // Se não houver mentor ID, todos os programas são considerados de outros mentores
+          this.currentMentorPrograms = [];
+          this.otherMentorsPrograms = programs;
+        }
+        
+        console.log('Programas do mentor atual:', this.currentMentorPrograms);
+        console.log('Programas de outros mentores:', this.otherMentorsPrograms);
+        
+        this.loadingInternPrograms = false;
+      })
+      .catch(error => {
+        console.error('Erro ao carregar programas do estagiário:', error);
+        this.internProgramsError = 'Erro ao carregar programas do estagiário. Tente novamente.';
+        this.loadingInternPrograms = false;
+      });
+  }
+
+  /**
+   * Verifica se um programa está ativo (baseado na data atual)
+   * @param program Programa de estágio
+   */
+  isProgramActive(program: InternshipProgram): boolean {
+    const now = new Date();
+    const startDate = new Date(program.startDate);
+    const endDate = new Date(program.endDate);
     
+    return now >= startDate && now <= endDate;
+  }
+
+  /**
+   * Retorna o status do programa (Ativo, Finalizado, Futuro)
+   * @param program Programa de estágio
+   */
+  getProgramStatus(program: InternshipProgram): string {
+    const now = new Date();
+    const startDate = new Date(program.startDate);
+    const endDate = new Date(program.endDate);
+    
+    if (now < startDate) {
+      return 'Futuro';
+    } else if (now > endDate) {
+      return 'Finalizado';
+    } else {
+      return 'Ativo';
+    }
+  }
+
+  /**
+   * Seleciona um programa de estagiário e carrega seus cursos
+   * @param programId ID do programa selecionado
+   */
+  selectInternProgram(programId: string): void {
+    if (this.selectedInternProgramId === programId) {
+      // Se o mesmo programa foi clicado, deseleciona
+      this.selectedInternProgramId = null;
+      this.selectedInternProgramCourses = [];
+      this.completedCoursesByIntern.clear();
+      return;
+    }
+
+    this.selectedInternProgramId = programId;
+    this.loadInternProgramCourses(programId);
+  }
+
+  /**
+   * Carrega os cursos de um programa específico e os cursos concluídos pelo estagiário
+   * @param programId ID do programa
+   */
+  loadInternProgramCourses(programId: string): void {
+    if (this.selectedUserIndex === null) {
+      console.error('Nenhum estagiário selecionado');
+      return;
+    }
+
+    const internId = this.users[this.selectedUserIndex].id;
+    
+    this.loadingInternProgramCourses = true;
+    this.internProgramCoursesError = '';
+    this.selectedInternProgramCourses = [];
+    this.completedCoursesByIntern.clear();
+
+    // Carrega cursos do programa
+    const programCoursesPromise = fetch(`http://localhost:8080/api/internship/${programId}/courses`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Erro ao carregar cursos do programa');
+        }
+        return response.json();
+      });
+
+    // Carrega cursos concluídos pelo estagiário
+    const completedCoursesPromise = this.courseService.getCompletedCourses(internId)
+      .toPromise()
+      .catch(error => {
+        console.warn('Erro ao carregar cursos concluídos, continuando sem eles:', error);
+        return [];
+      });
+
+    // Executa ambas as requisições em paralelo
+    Promise.all([programCoursesPromise, completedCoursesPromise])
+      .then(([programCourses, completedCourses]) => {
+        console.log('Cursos do programa carregados:', programCourses);
+        console.log('Cursos concluídos pelo estagiário:', completedCourses);
+        
+        this.selectedInternProgramCourses = programCourses || [];
+        
+        // Cria set com IDs dos cursos concluídos para lookup rápido
+        if (completedCourses && Array.isArray(completedCourses)) {
+          this.completedCoursesByIntern = new Set(completedCourses.map((course: Course) => course.id));
+        }
+        
+        this.loadingInternProgramCourses = false;
+      })
+      .catch(error => {
+        console.error('Erro ao carregar dados do programa:', error);
+        this.internProgramCoursesError = 'Erro ao carregar cursos do programa. Tente novamente.';
+        this.loadingInternProgramCourses = false;
+      });
+  }
+
+  /**
+   * Verifica se um curso foi concluído pelo estagiário selecionado
+   * @param courseId ID do curso
+   */
+  isCourseCompletedByIntern(courseId: string): boolean {
+    return this.completedCoursesByIntern.has(courseId);
+  }
+
+  /**
+   * Obtém os cursos concluídos pelo estagiário do programa selecionado
+   */
+  getCompletedCoursesForProgram(): Course[] {
+    return this.selectedInternProgramCourses.filter(course => 
+      this.isCourseCompletedByIntern(course.id)
+    );
+  }
+
+  /**
+   * Obtém os cursos não concluídos pelo estagiário do programa selecionado
+   */
+  getPendingCoursesForProgram(): Course[] {
+    return this.selectedInternProgramCourses.filter(course => 
+      !this.isCourseCompletedByIntern(course.id)
+    );
+  }
+
+  /**
+   * Calcula a porcentagem de progresso do estagiário no programa selecionado
+   */
+  getProgressPercentage(): number {
+    if (this.selectedInternProgramCourses.length === 0) {
+      return 0;
+    }
+    return Math.round((this.getCompletedCoursesForProgram().length / this.selectedInternProgramCourses.length) * 100);
   }
 }

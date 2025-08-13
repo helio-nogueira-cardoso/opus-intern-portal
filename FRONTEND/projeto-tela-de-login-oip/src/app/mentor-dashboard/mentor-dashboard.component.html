@@ -22,6 +22,14 @@
             Programas De Estágio
           </button>
         </li>
+        <li class="nav-item">
+          <button 
+            class="nav-button" 
+            [class.active]="activeTab === 'mentoria'"
+            (click)="setActiveTab('mentoria')">
+            Mentoria
+          </button>
+        </li>
       </ul>
     </nav>
 
@@ -339,6 +347,329 @@
           </button>
         </div>
 
+      </div>
+    </div>
+    
+    <!-- Mentoria Tab Content -->
+    <div *ngIf="activeTab === 'mentoria'" class="tab-content">
+      <div class="dashboard-grid">
+        <!-- 1. Meus Programas de Estágio (reutilizado) -->
+        <div class="dashboard-card">
+          <h2>Meus Programas de Estágio</h2>
+          <p class="section-description">Programas de estágio criados por você</p>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingPrograms" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando programas...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="programError" class="error-message">
+            <p>{{ programError }}</p>
+            <button class="retry-button" (click)="loadInternshipPrograms()">Tentar Novamente</button>
+          </div>
+          
+          <!-- Programs List -->
+          <div *ngIf="!loadingPrograms && !programError" class="programs-list">
+            <div *ngFor="let program of internshipPrograms; let i = index" 
+                 class="program-item"
+                 [class.selected]="selectedProgramIndex === i"
+                 (click)="selectProgram(i)">
+              <div class="program-info">
+                <h3>{{ program.title }}</h3>
+                <p>{{ program.description }}</p>
+                <div class="program-dates">
+                  <span class="date-info">
+                    <strong>Início:</strong> {{ formatDate(program.startDate) }}
+                  </span>
+                  <span class="date-info">
+                    <strong>Fim:</strong> {{ formatDate(program.endDate) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div *ngIf="internshipPrograms.length === 0" class="empty-message">
+              <p>Nenhum programa de estágio encontrado</p>
+              <p class="empty-hint">Crie seu primeiro programa na aba "Programas De Estágio"</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Estagiários Cadastrados (reutilizado) -->
+        <div class="dashboard-card">
+          <h2>Estagiários Cadastrados</h2>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingUsers" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando usuários...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="userError" class="error-message">
+            <p>{{ userError }}</p>
+            <button class="retry-button" (click)="loadUsers()">Tentar Novamente</button>
+          </div>
+          
+          <!-- Users List -->
+          <div *ngIf="!loadingUsers && !userError" class="users-list">
+            <div *ngFor="let user of users; let i = index" 
+                 class="user-item" 
+                 [class.selected]="selectedUserIndex === i"
+                 (click)="selectUser(i)">
+              <div class="user-info">
+                <span class="user-email">{{ user.email }}</span>
+                <span class="user-role">{{ user.role || 'Usuário' }}</span>
+              </div>
+            </div>
+            
+            <div *ngIf="users.length === 0" class="empty-message">
+              <p>Nenhum usuário encontrado</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Gerenciamento de Mentoria -->
+        <div class="dashboard-card">
+          <h2>Gerenciamento de Mentoria</h2>
+          <p class="section-description">Gerencie as relações entre programas e estagiários</p>
+          
+          <div class="mentorship-management">
+            <div *ngIf="selectedProgramIndex !== null && selectedUserIndex !== null" class="mentorship-actions">
+              <div class="selected-info">
+                <h4>Programa Selecionado:</h4>
+                <p>{{ internshipPrograms[selectedProgramIndex].title }}</p>
+                
+                <h4>Estagiário Selecionado:</h4>
+                <p>{{ users[selectedUserIndex].email }}</p>
+              </div>
+              
+              <div class="mentorship-buttons">
+                <button class="create-button" (click)="assignInternToProgram()">
+                  Atribuir Estagiário ao Programa
+                </button>
+              </div>
+            </div>
+            
+            <div *ngIf="selectedProgramIndex === null || selectedUserIndex === null" class="mentorship-instructions">
+              <p>Para gerenciar a mentoria:</p>
+              <ol>
+                <li>Selecione um programa de estágio na lista à esquerda</li>
+                <li>Selecione um estagiário na lista central</li>
+                <li>Use as opções de gerenciamento que aparecerão aqui</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Seção adicional para mostrar programas do estagiário selecionado -->
+      <div *ngIf="selectedUserIndex !== null" class="dashboard-grid">
+        <!-- Programas do mentor corrente -->
+        <div class="dashboard-card">
+          <h2>Meus Programas - Estagiário: {{ users[selectedUserIndex].email }}</h2>
+          <p class="section-description">Programas criados por você que o estagiário está participando</p>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingInternPrograms" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando programas do estagiário...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="internProgramsError" class="error-message">
+            <p>{{ internProgramsError }}</p>
+            <button class="retry-button" (click)="loadInternPrograms(users[selectedUserIndex].id)">Tentar Novamente</button>
+          </div>
+          
+          <!-- Current Mentor Programs List -->
+          <div *ngIf="!loadingInternPrograms && !internProgramsError" class="intern-programs">
+            <div *ngFor="let program of currentMentorPrograms" class="program-item current-mentor" 
+                 [class.selected]="selectedInternProgramId === program.id"
+                 (click)="selectInternProgram(program.id)">
+              <div class="program-info">
+                <h3>{{ program.title }}</h3>
+                <p>{{ program.description }}</p>
+                <div class="program-dates">
+                  <span class="date-info">
+                    <strong>Início:</strong> {{ formatDate(program.startDate) }}
+                  </span>
+                  <span class="date-info">
+                    <strong>Fim:</strong> {{ formatDate(program.endDate) }}
+                  </span>
+                </div>
+                <div class="program-status">
+                  <span class="status-badge" [class.active]="isProgramActive(program)">
+                    {{ getProgramStatus(program) }}
+                  </span>
+                </div>
+                <div class="mentor-badge">
+                  <span class="badge current-mentor-badge">Seu programa</span>
+                </div>
+                <div class="click-hint">
+                  <small>Clique para ver os cursos</small>
+                </div>
+              </div>
+            </div>
+            
+            <div *ngIf="currentMentorPrograms.length === 0" class="empty-message">
+              <p>Este estagiário não está participando de nenhum programa criado por você</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Programas de outros mentores -->
+        <div class="dashboard-card">
+          <h2>Outros Programas - Estagiário: {{ users[selectedUserIndex].email }}</h2>
+          <p class="section-description">Programas criados por outros mentores que o estagiário está participando</p>
+          
+          <!-- Other Mentors Programs List -->
+          <div *ngIf="!loadingInternPrograms && !internProgramsError" class="intern-programs">
+            <div *ngFor="let program of otherMentorsPrograms" class="program-item other-mentor"
+                 [class.selected]="selectedInternProgramId === program.id"
+                 (click)="selectInternProgram(program.id)">
+              <div class="program-info">
+                <h3>{{ program.title }}</h3>
+                <p>{{ program.description }}</p>
+                <div class="program-dates">
+                  <span class="date-info">
+                    <strong>Início:</strong> {{ formatDate(program.startDate) }}
+                  </span>
+                  <span class="date-info">
+                    <strong>Fim:</strong> {{ formatDate(program.endDate) }}
+                  </span>
+                </div>
+                <div class="program-status">
+                  <span class="status-badge" [class.active]="isProgramActive(program)">
+                    {{ getProgramStatus(program) }}
+                  </span>
+                </div>
+                <div class="mentor-badge">
+                  <span class="badge other-mentor-badge">Outro mentor</span>
+                </div>
+                <div class="click-hint">
+                  <small>Clique para ver os cursos</small>
+                </div>
+              </div>
+            </div>
+            
+            <div *ngIf="otherMentorsPrograms.length === 0" class="empty-message">
+              <p>Este estagiário não está participando de programas de outros mentores</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Seção para exibir cursos do programa selecionado -->
+      <div *ngIf="selectedInternProgramId && selectedUserIndex !== null" class="dashboard-grid">
+        <div class="dashboard-card courses-section">
+          <h2>Cursos do Programa - Estagiário: {{ users[selectedUserIndex].email }}</h2>
+          <p class="section-description">Progresso do estagiário nos cursos do programa selecionado</p>
+          
+          <!-- Loading -->
+          <div *ngIf="loadingInternProgramCourses" class="loading">
+            <div class="spinner"></div>
+            <p>Carregando cursos do programa...</p>
+          </div>
+          
+          <!-- Error -->
+          <div *ngIf="internProgramCoursesError" class="error-message">
+            <p>{{ internProgramCoursesError }}</p>
+            <button class="retry-button" (click)="loadInternProgramCourses(selectedInternProgramId)">Tentar Novamente</button>
+          </div>
+          
+          <!-- Courses Content -->
+          <div *ngIf="!loadingInternProgramCourses && !internProgramCoursesError" class="courses-content">
+            
+            <!-- Cursos Concluídos -->
+            <div class="courses-section completed-courses">
+              <h3>
+                <i class="status-icon completed">✓</i>
+                Cursos Concluídos ({{ getCompletedCoursesForProgram().length }})
+              </h3>
+              
+              <div *ngIf="getCompletedCoursesForProgram().length > 0" class="courses-list">
+                <div *ngFor="let course of getCompletedCoursesForProgram()" class="course-item completed">
+                  <div class="course-info">
+                    <h4>{{ course.title }}</h4>
+                    <p>{{ course.description }}</p>
+                  </div>
+                  <div class="course-status">
+                    <span class="status-badge completed">
+                      <i class="icon">✓</i>
+                      Concluído
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="getCompletedCoursesForProgram().length === 0" class="empty-courses">
+                <p>Nenhum curso foi concluído ainda</p>
+              </div>
+            </div>
+            
+            <!-- Cursos Pendentes -->
+            <div class="courses-section pending-courses">
+              <h3>
+                <i class="status-icon pending">⏳</i>
+                Cursos Pendentes ({{ getPendingCoursesForProgram().length }})
+              </h3>
+              
+              <div *ngIf="getPendingCoursesForProgram().length > 0" class="courses-list">
+                <div *ngFor="let course of getPendingCoursesForProgram()" class="course-item pending">
+                  <div class="course-info">
+                    <h4>{{ course.title }}</h4>
+                    <p>{{ course.description }}</p>
+                  </div>
+                  <div class="course-status">
+                    <span class="status-badge pending">
+                      <i class="icon">⏳</i>
+                      Pendente
+                    </span>
+                  </div>
+                </div>
+              </div>
+              
+              <div *ngIf="getPendingCoursesForProgram().length === 0" class="empty-courses">
+                <p>Todos os cursos foram concluídos! 🎉</p>
+              </div>
+            </div>
+            
+            <!-- Resumo do Progresso -->
+            <div class="progress-summary">
+              <h3>Resumo do Progresso</h3>
+              <div class="progress-stats">
+                <div class="stat-item">
+                  <span class="stat-number">{{ selectedInternProgramCourses.length }}</span>
+                  <span class="stat-label">Total de Cursos</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ getCompletedCoursesForProgram().length }}</span>
+                  <span class="stat-label">Concluídos</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ getPendingCoursesForProgram().length }}</span>
+                  <span class="stat-label">Pendentes</span>
+                </div>
+                <div class="stat-item">
+                  <span class="stat-number">{{ getProgressPercentage() }}%</span>
+                  <span class="stat-label">Progresso</span>
+                </div>
+              </div>
+              
+              <!-- Barra de Progresso -->
+              <div class="progress-bar-container">
+                <div class="progress-bar">
+                  <div class="progress-fill" 
+                       [style.width.%]="getProgressPercentage()">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     

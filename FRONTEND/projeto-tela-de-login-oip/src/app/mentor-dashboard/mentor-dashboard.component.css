@@ -682,6 +682,205 @@
   }
 }
 
+/* Mentorship Management Styles */
+.mentorship-management {
+  text-align: left;
+}
+
+.mentorship-actions {
+  background: #333333;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.selected-info h4 {
+  color: #FF8F00;
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0.5rem 0 0.25rem 0;
+}
+
+.selected-info p {
+  color: #DCDCDC;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  padding-left: 1rem;
+}
+
+.mentorship-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.mentorship-buttons .create-button {
+  flex: 1;
+  min-width: 200px;
+  margin-top: 0;
+}
+
+.mentorship-instructions {
+  background: #333333;
+  padding: 1.5rem;
+  border-radius: 8px;
+  color: #DCDCDC;
+}
+
+.mentorship-instructions p {
+  margin-bottom: 1rem;
+  color: #FF8F00;
+  font-weight: 600;
+}
+
+.mentorship-instructions ol {
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.mentorship-instructions li {
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+/* Intern Progress Styles */
+.intern-progress {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+/* Intern Programs Styles */
+.intern-programs {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.intern-programs .program-item {
+  border: 1px solid #333333;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+  background-color: #404040;
+  transition: all 0.3s ease;
+}
+
+.intern-programs .program-item:hover {
+  background-color: #4d4d4d;
+  border-color: #FF8F00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
+}
+
+/* Estilos específicos para programas do mentor atual */
+.program-item.current-mentor {
+  border-left: 4px solid #00ff00;
+  background-color: #1a2e1a;
+}
+
+.program-item.current-mentor:hover {
+  background-color: #20352e;
+  border-color: #00ff00;
+  box-shadow: 0 4px 12px rgba(0, 255, 0, 0.2);
+}
+
+/* Estilos específicos para programas de outros mentores */
+.program-item.other-mentor {
+  border-left: 4px solid #FF8F00;
+  background-color: #2e2a1a;
+}
+
+.program-item.other-mentor:hover {
+  background-color: #352e20;
+  border-color: #FF8F00;
+  box-shadow: 0 4px 12px rgba(255, 143, 0, 0.2);
+}
+
+/* Badges para identificar mentores */
+.mentor-badge {
+  margin-top: 10px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.current-mentor-badge {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.other-mentor-badge {
+  background: linear-gradient(135deg, #ff8f00, #f57c00);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 2px 8px rgba(255, 143, 0, 0.3);
+}
+
+.program-status {
+  margin-top: 10px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: #666666;
+  color: #DCDCDC;
+  border: 1px solid #666666;
+}
+
+.status-badge.active {
+  background-color: #1a4d1a;
+  color: #00ff00;
+  border-color: #00ff00;
+}
+
+.progress-stats {
+  background: #333333;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #404040;
+  margin-bottom: 0.5rem;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.stat-label {
+  color: #DCDCDC;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #FF8F00;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
 @media (max-width: 480px) {
   .mentor-container {
     padding: 10px;
@@ -707,6 +906,483 @@
   .back-button {
     padding: 0.875rem 1.5rem;
     font-size: 1rem;
+  }
+
+  .intern-progress {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .intern-programs .program-item {
+    padding: 12px;
+  }
+
+  .mentorship-buttons {
+    flex-direction: column;
+  }
+
+  .mentorship-buttons .create-button {
+    min-width: auto;
+  }
+}
+
+/* Estilos para programas clicáveis - Melhorado */
+.program-item {
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+  border: 1px solid #404040;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.program-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 143, 0, 0.05) 0%, rgba(250, 0, 30, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+}
+
+.program-item:hover::before {
+  opacity: 1;
+}
+
+.program-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 
+    0 12px 35px rgba(255, 143, 0, 0.15),
+    0 4px 15px rgba(250, 0, 30, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: #ff8f00;
+}
+
+.program-item.selected {
+  border: 2px solid #ff8f00;
+  box-shadow: 
+    0 0 25px rgba(255, 143, 0, 0.3),
+    0 8px 30px rgba(255, 143, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  background: linear-gradient(135deg, #2d2d2d 0%, #242424 100%);
+}
+
+.program-item .program-info {
+  position: relative;
+  z-index: 2;
+  color: #DCDCDC;
+}
+
+.program-item.current-mentor {
+  border-left: 4px solid #4CAF50;
+}
+
+.program-item.other-mentor {
+  border-left: 4px solid #ff8f00;
+}
+
+.click-hint {
+  text-align: center;
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.click-hint small {
+  color: #999;
+  font-style: italic;
+  opacity: 0.8;
+  font-size: 0.85em;
+  transition: color 0.3s ease;
+}
+
+.program-item:hover .click-hint small {
+  color: #ff8f00;
+}
+
+/* Estilos para seção de cursos - Melhorado */
+.courses-section {
+  margin-top: 20px;
+}
+
+.courses-content {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.courses-section {
+  background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+  border-radius: 15px;
+  padding: 25px;
+  border: 1px solid #404040;
+  position: relative;
+  overflow: hidden;
+}
+
+.courses-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent 0%, var(--accent-color) 50%, transparent 100%);
+}
+
+.courses-section.completed-courses {
+  --accent-color: #4CAF50;
+  box-shadow: 0 4px 20px rgba(76, 175, 80, 0.1);
+}
+
+.courses-section.pending-courses {
+  --accent-color: #ff8f00;
+  box-shadow: 0 4px 20px rgba(255, 143, 0, 0.1);
+}
+
+.courses-section h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  color: #DCDCDC;
+  font-size: 1.3em;
+  font-weight: 600;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.status-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+  font-size: 1em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-icon.completed {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+.status-icon.pending {
+  background: linear-gradient(135deg, #ff8f00, #f57c00);
+  box-shadow: 0 2px 8px rgba(255, 143, 0, 0.4);
+}
+
+.courses-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.course-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #333333 0%, #2a2a2a 100%);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 
+    0 4px 15px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border: 1px solid #404040;
+}
+
+.course-item:hover {
+  transform: translateX(8px);
+  box-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border-color: #555555;
+}
+
+.course-info {
+  flex: 1;
+}
+
+.course-info h4 {
+  margin: 0 0 8px 0;
+  color: #DCDCDC;
+  font-size: 1.2em;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.course-info p {
+  margin: 0;
+  color: #999;
+  font-size: 0.95em;
+  line-height: 1.5;
+}
+
+.course-status {
+  margin-left: 20px;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.status-badge.completed {
+  background: linear-gradient(135deg, #4CAF50, #45a049);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+}
+
+.status-badge.pending {
+  background: linear-gradient(135deg, #ff8f00, #f57c00);
+  box-shadow: 0 2px 8px rgba(255, 143, 0, 0.4);
+}
+
+.status-badge .icon {
+  font-size: 1em;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+.empty-courses {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-style: italic;
+  font-size: 1.1em;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+  border-radius: 10px;
+  border: 1px dashed #555;
+}
+
+/* Resumo do progresso - Melhorado */
+.progress-summary {
+  background: linear-gradient(135deg, #ff8f00 0%, #f57c00 50%, #e65100 100%);
+  color: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 8px 32px rgba(255, 143, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.progress-summary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s infinite;
+}
+
+.progress-summary h3 {
+  margin: 0 0 25px 0;
+  font-size: 1.5em;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  position: relative;
+  z-index: 2;
+}
+
+.progress-summary .progress-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 25px;
+  margin-bottom: 30px;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.progress-summary .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.3s ease;
+  border-bottom: none;
+  margin-bottom: 0;
+  justify-content: center;
+}
+
+.progress-summary .stat-item:hover {
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-number {
+  font-size: 2.5em;
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.95em;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 16px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 50%, #4CAF50 100%);
+  border-radius: 15px;
+  transition: width 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+  position: relative;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 2.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Responsividade para novos componentes em dispositivos móveis - Melhorada */
+@media (max-width: 768px) {
+  .courses-content {
+    gap: 20px;
+  }
+  
+  .course-item {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    padding: 15px;
+  }
+  
+  .course-status {
+    margin-left: 0;
+    align-self: flex-start;
+  }
+  
+  .progress-summary .progress-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .progress-summary .stat-item {
+    padding: 15px;
+  }
+  
+  .stat-number {
+    font-size: 2em;
+  }
+  
+  .program-item:hover {
+    transform: translateY(-2px);
+  }
+  
+  .course-item:hover {
+    transform: translateX(3px);
+  }
+  
+  .courses-section {
+    padding: 20px;
+  }
+  
+  .progress-summary {
+    padding: 25px 20px;
+  }
+  
+  .progress-summary h3 {
+    font-size: 1.3em;
+  }
+  
+  .status-icon {
+    width: 24px;
+    height: 24px;
+    font-size: 0.9em;
+  }
+  
+  .courses-section h3 {
+    font-size: 1.1em;
+  }
+}
+
+@media (max-width: 480px) {
+  .progress-summary .progress-stats {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  
+  .stat-number {
+    font-size: 1.8em;
+  }
+  
+  .course-item {
+    padding: 12px;
+  }
+  
+  .status-badge {
+    padding: 6px 12px;
+    font-size: 0.8em;
   }
 }
 

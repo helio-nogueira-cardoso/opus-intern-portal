@@ -64,4 +64,19 @@ public class InternshipController {
                 .map(InternshipDTO::fromEntity)
                 .toList();
     }
+
+    @PostMapping("/{internshipId}/intern/{internId}")
+    public void addInternToInternship(@PathVariable UUID internshipId, @PathVariable UUID internId) {
+        internshipService.addInternshipToUser(internshipId, internId);
+    }
+
+    @DeleteMapping("/{internshipId}/intern/{internId}")
+    public void removeInternFromInternship(@PathVariable UUID internshipId, @PathVariable UUID internId) {
+        internshipService.removeInternshipFromUser(internshipId, internId);
+    }
+
+    @GetMapping("/intern/{internId}")
+    public List<InternshipDTO>  getInternshipsByIntern(@PathVariable UUID internId) {
+        return internshipService.getInternshipsByInternId(internId);
+    }
 }
