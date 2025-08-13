@@ -8,45 +8,239 @@
       </svg>
     </div>
     
-    <!-- Seção de Cursos -->
-    <div class="courses-section">
-      <h2>Cursos Disponíveis</h2>
-      
-      <!-- Loading -->
-      <div *ngIf="loading" class="loading">
-        <div class="spinner"></div>
-        <p>Carregando cursos...</p>
-      </div>
-      
-      <!-- Error -->
-      <div *ngIf="error" class="error-message">
-        <p>{{ error }}</p>
-        <button class="retry-button" (click)="retryLoadCourses()">Tentar Novamente</button>
-      </div>
-      
-      <!-- Courses List -->
-      <div *ngIf="!loading && !error" class="courses-grid">
-        <div *ngFor="let course of courses" 
-             class="course-card" 
-             [class.completed]="isCourseCompleted(course.id)"
-             (click)="toggleCourseCompletion(course.id)">
-          <div class="course-status">
-            <div class="status-icon">
-              <svg *ngIf="isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-              <svg *ngIf="!isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
-              </svg>
+    <!-- Navigation Bar -->
+    <nav class="welcome-navbar">
+      <ul class="nav-items">
+        <li class="nav-item">
+          <button 
+            class="nav-button" 
+            [class.active]="activeTab === 'cursos'"
+            (click)="setActiveTab('cursos')">
+            Todos os Cursos
+          </button>
+        </li>
+        <li class="nav-item">
+          <button 
+            class="nav-button" 
+            [class.active]="activeTab === 'programas'"
+            (click)="setActiveTab('programas')">
+            Meus Programas
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Cursos Tab Content -->
+    <div *ngIf="activeTab === 'cursos'" class="tab-content">
+      <!-- Seção de Cursos -->
+      <div class="courses-section">
+        <h2>Cursos Disponíveis</h2>
+        
+        <!-- Loading -->
+        <div *ngIf="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando cursos...</p>
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="error" class="error-message">
+          <p>{{ error }}</p>
+          <button class="retry-button" (click)="retryLoadCourses()">Tentar Novamente</button>
+        </div>
+        
+        <!-- Courses List -->
+        <div *ngIf="!loading && !error" class="courses-grid">
+          <div *ngFor="let course of courses" 
+               class="course-card" 
+               [class.completed]="isCourseCompleted(course.id)"
+               (click)="toggleCourseCompletion(course.id)">
+            <div class="course-status">
+              <div class="status-icon">
+                <svg *ngIf="isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <svg *ngIf="!isCourseCompleted(course.id)" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                </svg>
+              </div>
+              <span class="status-text">{{ isCourseCompleted(course.id) ? 'Concluído' : 'Pendente' }}</span>
             </div>
-            <span class="status-text">{{ isCourseCompleted(course.id) ? 'Concluído' : 'Pendente' }}</span>
+            <h3>{{ course.title }}</h3>
+            <p>{{ course.description }}</p>
           </div>
-          <h3>{{ course.title }}</h3>
-          <p>{{ course.description }}</p>
         </div>
       </div>
     </div>
-    
-    <button class="back-button" (click)="goBack()">Voltar ao Login</button>
+
+    <!-- Programas Tab Content -->
+    <div *ngIf="activeTab === 'programas'" class="tab-content">
+      <!-- Seção de Programas de Estágio -->
+      <div class="programs-section">
+        <h2>Meus Programas de Estágio</h2>
+        
+        <!-- Loading -->
+        <div *ngIf="loadingPrograms" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando programas...</p>
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="programError" class="error-message">
+          <p>{{ programError }}</p>
+          <button class="retry-button" (click)="retryLoadPrograms()">Tentar Novamente</button>
+        </div>
+        
+        <!-- Programs List -->
+        <div *ngIf="!loadingPrograms && !programError" class="programs-grid">
+          <div *ngFor="let program of internshipPrograms; let i = index" 
+               class="program-card" 
+               [class.selected]="selectedProgramIndex === i"
+               [class.active]="isProgramActive(program)"
+               (click)="selectProgram(i)">
+            <div class="program-header">
+              <h3>{{ program.title }}</h3>
+              <span class="program-status" [class]="getProgramStatus(program).toLowerCase()">
+                {{ getProgramStatus(program) }}
+              </span>
+            </div>
+            <p class="program-description">{{ program.description }}</p>
+            <div class="program-dates">
+              <div class="date-info">
+                <span class="date-label">Início:</span>
+                <span class="date-value">{{ formatDate(program.startDate) }}</span>
+              </div>
+              <div class="date-info">
+                <span class="date-label">Fim:</span>
+                <span class="date-value">{{ formatDate(program.endDate) }}</span>
+              </div>
+            </div>
+            <div class="click-hint">
+              <small>Clique para ver os cursos do programa</small>
+            </div>
+          </div>
+          
+          <div *ngIf="internshipPrograms.length === 0" class="empty-message">
+            <p>Você ainda não está inscrito em nenhum programa de estágio.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cursos do Programa Selecionado -->
+      <div *ngIf="selectedProgramIndex !== null" class="program-courses-section">
+        <h2>Cursos do Programa: {{ internshipPrograms[selectedProgramIndex].title }}</h2>
+        
+        <!-- Loading -->
+        <div *ngIf="loadingProgramCourses" class="loading">
+          <div class="spinner"></div>
+          <p>Carregando cursos do programa...</p>
+        </div>
+        
+        <!-- Error -->
+        <div *ngIf="programCoursesError" class="error-message">
+          <p>{{ programCoursesError }}</p>
+          <button class="retry-button" (click)="loadProgramCourses(internshipPrograms[selectedProgramIndex].id)">Tentar Novamente</button>
+        </div>
+        
+        <!-- Program Courses Content -->
+        <div *ngIf="!loadingProgramCourses && !programCoursesError" class="program-courses-content">
+          <!-- Progress Summary -->
+          <div class="progress-summary">
+            <h3>Progresso no Programa</h3>
+            <div class="progress-stats">
+              <div class="stat-item">
+                <span class="stat-number">{{ getCompletedCoursesForProgram().length }}</span>
+                <span class="stat-label">Concluídos</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">{{ getPendingCoursesForProgram().length }}</span>
+                <span class="stat-label">Pendentes</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">{{ getProgressPercentage() }}%</span>
+                <span class="stat-label">Completo</span>
+              </div>
+            </div>
+            <div class="progress-bar-container">
+              <div class="progress-bar">
+                <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interaction Hint -->
+          <div class="interaction-hint">
+            <p>💡 <strong>Dica:</strong> Clique nos cursos abaixo para marcar/desmarcar como concluído</p>
+          </div>
+
+          <!-- Courses Lists -->
+          <div class="courses-sections">
+            <!-- Completed Courses -->
+            <div *ngIf="getCompletedCoursesForProgram().length > 0" class="courses-section completed-courses">
+              <h3>
+                <span class="status-icon completed">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 12L11 14L15 10M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </span>
+                Cursos Concluídos
+              </h3>
+              <div class="courses-list">
+                <div *ngFor="let course of getCompletedCoursesForProgram()" 
+                     class="course-item completed clickable"
+                     (click)="toggleCourseCompletionInProgram(course.id)">
+                  <div class="course-info">
+                    <h4>{{ course.title }}</h4>
+                    <p>{{ course.description }}</p>
+                  </div>
+                  <div class="course-status">
+                    <span class="status-badge completed">
+                      <span class="icon">✓</span>
+                      Concluído
+                      <span class="click-icon">👆</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pending Courses -->
+            <div *ngIf="getPendingCoursesForProgram().length > 0" class="courses-section pending-courses">
+              <h3>
+                <span class="status-icon pending">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                </span>
+                Cursos Pendentes
+              </h3>
+              <div class="courses-list">
+                <div *ngFor="let course of getPendingCoursesForProgram()" 
+                     class="course-item pending clickable"
+                     (click)="toggleCourseCompletionInProgram(course.id)">
+                  <div class="course-info">
+                    <h4>{{ course.title }}</h4>
+                    <p>{{ course.description }}</p>
+                  </div>
+                  <div class="course-status">
+                    <span class="status-badge pending">
+                      <span class="icon">○</span>
+                      Pendente
+                      <span class="click-icon">👆</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- No Courses -->
+            <div *ngIf="programCourses.length === 0" class="empty-courses">
+              <p>Este programa ainda não possui cursos associados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="back-button" (click)="logout()">Logout</button>
   </div>
 </div>

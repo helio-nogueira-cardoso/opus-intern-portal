@@ -22,7 +22,7 @@ public class PortalUserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public List<PortalUserDTO> getPortalUser() {
+    public List<PortalUserDTO> getPortalUsers() {
         return portalUserRepository.findAll()
                 .stream().map(PortalUserDTO::fromEntity).toList();
     }
